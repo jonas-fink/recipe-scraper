@@ -1,4 +1,3 @@
-import React from 'react';
 import { Pill } from './hero/Pill';
 
 const Hero = () => {
