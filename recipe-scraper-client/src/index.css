@@ -71,6 +71,10 @@
                 transparent 55%
             ),
             var(--color-bg);
-        background-attachment: fixed; /* Glow bleibt beim Scrollen fix */
+        background-attachment: fixed;
     }
+}
+
+@utility bg-gradient-brand {
+    background-image: var(--gradient-brand);
 }
