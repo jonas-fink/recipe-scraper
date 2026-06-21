@@ -1,0 +1,70 @@
+{
+    "name": "recipe-scraper-backend",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/app.js",
+    "imports": {
+        "#controllers": {
+            "dev": "./src/controllers/index.ts",
+            "default": "./dist/controllers/index.js"
+        },
+        "#middlewares": {
+            "dev": "./src/middlewares/index.ts",
+            "default": "./dist/middlewares/index.js"
+        },
+        "#models": {
+            "dev": "./src/models/index.ts",
+            "default": "./dist/models/index.js"
+        },
+        "#routes": {
+            "dev": "./src/routes/index.ts",
+            "default": "./dist/routes/index.js"
+        },
+        "#schemas": {
+            "dev": "./src/schemas/index.ts",
+            "default": "./dist/schemas/index.js"
+        },
+        "#config": {
+            "dev": "./src/config/index.ts",
+            "default": "./dist/config/index.js"
+        },
+        "#utils": {
+            "dev": "./src/utils/index.ts",
+            "default": "./dist/utils/index.js"
+        },
+        "#services": {
+            "dev": "./src/services/index.ts",
+            "default": "./dist/services/index.js"
+        },
+        "#types": {
+            "dev": "./src/types/index.ts",
+            "default": "./src/types/index.js"
+        }
+    },
+    "scripts": {
+        "dev": "node --watch --conditions dev --env-file=.env src/server.ts",
+        "prebuild": "rm -rf dist",
+        "build": "tsc",
+        "prestart": "npm run build",
+        "start": "node dist/app.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "devDependencies": {
+        "@types/cookie-parser": "^1.4.10",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.6",
+        "@types/node": "^26.0.0",
+        "tsx": "^4.22.4",
+        "typescript": "^6.0.3"
+    },
+    "dependencies": {
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.6",
+        "express": "^5.2.1",
+        "mongoose": "^9.7.1",
+        "zod": "^4.4.3"
+    }
+}
