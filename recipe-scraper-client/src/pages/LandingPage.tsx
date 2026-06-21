@@ -41,14 +41,12 @@ const LandingPage = () => {
     };
 
     return (
-        <div className="flex w-full flex-col items-center gap-8 px-4 font-display">
+        <div className="flex w-full flex-col items-center gap-16 px-4 font-display">
             <Hero />
             <ExtractForm loading={loading} onSubmit={handleExtract} />
 
             {error && <p className="font-sans text-danger">{error}</p>}
-            {saved && (
-                <p className="font-sans text-success">Rezept gespeichert ✓</p>
-            )}
+            {saved && <p className="font-sans text-success">Recipe saved ✓</p>}
 
             {recipe && (
                 <RecipePreview
