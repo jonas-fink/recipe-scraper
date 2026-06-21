@@ -1,1 +1,76 @@
 @import 'tailwindcss';
+
+@layer base {
+    html,
+    body {
+        background-color: var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-sans);
+    }
+}
+
+@theme {
+    /* Surfaces */
+    --color-bg: #080b0d;
+    --color-surface: #0e1417;
+    --color-elevated: #131b20;
+    --color-glass: rgb(18 26 30 / 0.55);
+    --color-border: rgb(255 255 255 / 0.07);
+    --color-border-strong: rgb(255 255 255 / 0.14);
+
+    /* Text */
+    --color-text: #eaf1f2;
+    --color-text-muted: #93a4a9;
+    --color-text-subtle: #5e7077;
+
+    /* Brand accents */
+    --color-mint: #34e3a4;
+    --color-mint-soft: #6df2c2;
+    --color-azure: #38bdf8;
+    --color-azure-soft: #7dd3fc;
+    --color-primary: #34e3a4;
+    --color-accent: #38bdf8;
+
+    /* Status */
+    --color-success: #34e3a4;
+    --color-warning: #fbbf24;
+    --color-danger: #fb7185;
+
+    /* Gradient */
+    --gradient-brand: linear-gradient(135deg, #34e3a4 0%, #38bdf8 100%);
+
+    /* Radii */
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    --radius-full: 999px;
+
+    /* Typography */
+    --font-display: 'Space Grotesk', ui-sans-serif, sans-serif;
+    --font-sans: 'Manrope', ui-sans-serif, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    /* Shadows */
+    --shadow-card: 0 8px 30px rgb(0 0 0 / 0.45);
+    --shadow-glow: 0 0 40px rgb(52 227 164 / 0.22);
+}
+
+@layer base {
+    body {
+        @apply min-h-screen text-text antialiased;
+        background:
+            radial-gradient(
+                900px 520px at 82% -8%,
+                rgb(56 189 248 / 0.12),
+                transparent 60%
+            ),
+            radial-gradient(
+                820px 520px at -5% 6%,
+                rgb(52 227 164 / 0.12),
+                transparent 55%
+            ),
+            var(--color-bg);
+        background-attachment: fixed; /* Glow bleibt beim Scrollen fix */
+    }
+}
