@@ -46,7 +46,7 @@ export const update: RequestHandler = async (req, res, next) => {
         const updated = await Recipe.findOneAndUpdate(
             { _id: req.params.id, userId: req.userId },
             req.body,
-            { new: true },
+            { returnDocument: 'after' },
         );
         if (!updated) {
             res.status(404).json({ message: 'Recipe not found' });
