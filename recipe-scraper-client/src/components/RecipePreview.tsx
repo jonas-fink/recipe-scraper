@@ -123,14 +123,16 @@ export function RecipePreview({
                 ))}
             </ol>
 
-            <button
-                type="button"
-                onClick={onSave}
-                disabled={saving}
-                className="rounded-full bg-gradient-brand px-6 py-3 font-semibold text-bg disabled:opacity-50"
-            >
-                {saving ? 'Speichere…' : 'Rezept speichern'}
-            </button>
+            <div className="flex justify-center">
+                <button
+                    type="button"
+                    onClick={onSave}
+                    disabled={saving}
+                    className="rounded-full bg-gradient-brand px-6 py-3 font-semibold text-bg disabled:opacity-50"
+                >
+                    {saving ? 'Speichere…' : 'Rezept speichern'}
+                </button>
+            </div>
         </div>
     );
 }
