@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 import { User, RefreshToken } from '#models';
-import type { CreateUserInput, UpdateUserInput } from '#schemas';
+import type { UpdateUserInput } from '#schemas';
 
 export const getUsers: RequestHandler = async (_req, res, next) => {
     try {
@@ -9,36 +9,6 @@ export const getUsers: RequestHandler = async (_req, res, next) => {
             firstName: 1,
         });
         res.json({ data: users });
-    } catch (err) {
-        next(err);
-    }
-};
-
-export const createUser: RequestHandler<{}, {}, CreateUserInput> = async (
-    req,
-    res,
-    next,
-) => {
-    try {
-        const { name, email, password, role } = req.body;
-
-        let user;
-        try {
-            user = await User.create({
-                name,
-                email,
-                password,
-                role,
-            });
-        } catch (err) {
-            if ((err as { code?: number }).code === 11000) {
-                res.status(409).json({ message: 'email already taken' });
-                return;
-            }
-            throw err;
-        }
-
-        res.status(201).json({ data: user });
     } catch (err) {
         next(err);
     }

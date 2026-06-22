@@ -14,9 +14,8 @@ const protect: RequestHandler = (req, res, next) => {
     }
 
     if (!token) {
-        return res
-            .status(401)
-            .json({ message: 'Not authorized, no token available' });
+        res.status(401).json({ message: 'Not authorized, no token available' });
+        return;
     }
 
     try {
@@ -29,9 +28,7 @@ const protect: RequestHandler = (req, res, next) => {
         req.role = decoded.role ?? 'user';
         next();
     } catch (error) {
-        return res
-            .status(401)
-            .json({ message: 'Not authorized, token failed' });
+        res.status(401).json({ message: 'Not authorized, token failed' });
     }
 };
 
