@@ -16,6 +16,16 @@ const recipeSchema = new Schema(
         instructions: [String],
         sourceUrl: { type: String, required: true },
         status: { type: String, enum: ['draft', 'saved'], default: 'saved' },
+        userId: {
+            type: Schema.Types.ObjectId,
+            ref: 'User',
+            required: true,
+            index: true,
+        },
+        imageUrl: { type: String, default: null },
+        category: { type: String, default: null },
+        isPublished: { type: Boolean, default: false, index: true },
+        isFavorite: { type: Boolean, default: false },
     },
     { timestamps: true },
 );

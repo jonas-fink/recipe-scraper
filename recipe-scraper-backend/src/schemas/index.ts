@@ -3,6 +3,7 @@ export {
     ingredientSchema,
     extractSchema,
     saveRecipeSchema,
+    updateRecipeSchema,
 } from './recipe.ts';
 export type { Recipe, Ingredient } from './recipe.ts';
 export * from './user.ts';

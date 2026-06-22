@@ -14,12 +14,22 @@ export const recipeSchema = z.object({
 
 /** Body für POST /api/recipes/extract */
 export const extractSchema = z.object({
-    url: z.string().url(),
+    url: z.url(),
 });
 
 /** Body für POST /api/recipes (gespeichertes Rezept inkl. Quelle) */
 export const saveRecipeSchema = recipeSchema.extend({
-    sourceUrl: z.string().url(),
+    sourceUrl: z.url(),
+    category: z.string().min(1).optional(),
+    imageUrl: z.url().optional(),
+});
+
+/** Body für PATCH /api/recipes/:id (Rezept-Metadaten aktualisieren) */
+export const updateRecipeSchema = z.object({
+    category: z.string().min(1).nullable().optional(),
+    imageUrl: z.url().nullable().optional(),
+    isPublished: z.boolean().optional(),
+    isFavorite: z.boolean().optional(),
 });
 
 export type Recipe = z.infer<typeof recipeSchema>;

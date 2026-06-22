@@ -1,4 +1,15 @@
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+import { api } from '../utils/api';
+
+export const FOOD_CATEGORIES = [
+    'Breakfast',
+    'Lunch',
+    'Dinner',
+    'Dessert',
+    'Snack',
+    'Drink',
+    'Vegetarian',
+    'Vegan',
+];
 
 export interface Ingredient {
     name: string;
@@ -7,27 +18,32 @@ export interface Ingredient {
 }
 
 export interface Recipe {
+    _id?: string;
     title: string;
     ingredients: Ingredient[];
     instructions: string[];
     sourceUrl: string;
     status?: string;
+    category?: string | null;
+    imageUrl?: string | null;
+    isPublished?: boolean;
+    isFavorite?: boolean;
+    userId?: { name?: string } | string;
 }
 
-const request = async <T>(path: string, body: unknown): Promise<T> => {
-    const res = await fetch(`${API}/api/recipes${path}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(body),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message ?? 'Anfrage fehlgeschlagen');
-    return data as T;
-};
+export type RecipePatch = Partial<
+    Pick<Recipe, 'category' | 'imageUrl' | 'isPublished' | 'isFavorite'>
+>;
 
 export const extractRecipe = (url: string) =>
-    request<Recipe>('/extract', { url });
+    api.post<Recipe>('/recipes/extract', { url });
 
 export const saveRecipe = (recipe: Recipe) =>
-    request<Recipe & { _id: string }>('', recipe);
+    api.post<Recipe>('/recipes', recipe);
+
+export const listRecipes = () => api.get<Recipe[]>('/recipes');
+
+export const updateRecipe = (id: string, patch: RecipePatch) =>
+    api.patch<Recipe>(`/recipes/${id}`, patch);
+
+export const listCommunity = () => api.get<Recipe[]>('/recipes/community');

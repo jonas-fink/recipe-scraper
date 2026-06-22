@@ -1,10 +1,14 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import Hero from '../components/Hero';
 import { ExtractForm } from '../components/ExtractForm';
 import { RecipePreview } from '../components/RecipePreview';
 import { extractRecipe, saveRecipe, type Recipe } from '../api/recipes';
+import { useAuth } from '../context/AuthContext';
 
 const LandingPage = () => {
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -27,6 +31,10 @@ const LandingPage = () => {
 
     const handleSave = async () => {
         if (!recipe) return;
+        if (!user) {
+            navigate('/login');
+            return;
+        }
         setSaving(true);
         setError('');
         try {

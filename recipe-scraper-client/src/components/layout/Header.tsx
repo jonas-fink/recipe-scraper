@@ -14,7 +14,16 @@ const Header = () => {
                 <Link to="/" className="text-md font-semibold text-text-subtle">
                     How it works
                 </Link>
-                <Link to="/" className="text-md font-semibold text-text-subtle">
+                <Link
+                    to="/community"
+                    className="text-md font-semibold text-text-subtle"
+                >
+                    Community
+                </Link>
+                <Link
+                    to="/library"
+                    className="text-md font-semibold text-text-subtle"
+                >
                     Library
                 </Link>
                 <Link
