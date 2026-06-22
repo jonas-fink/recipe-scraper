@@ -44,7 +44,8 @@
     "scripts": {
         "dev": "node --watch --conditions dev --env-file=.env src/server.ts",
         "prebuild": "rm -rf dist",
-        "build": "tsc",
+        "build": "tsc -p tsconfig.build.json",
+        "test": "node --import tsx --test \"src/**/*.test.ts\"",
         "prestart": "npm run build",
         "start": "node dist/app.js"
     },
@@ -56,17 +57,26 @@
         "@types/cookie-parser": "^1.4.10",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.6",
+        "@types/jsonwebtoken": "^9.0.10",
         "@types/node": "^26.0.0",
         "tsx": "^4.22.4",
         "typescript": "^6.0.3"
     },
     "dependencies": {
         "@google/genai": "^2.9.0",
+        "bcryptjs": "^3.0.3",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.6",
         "express": "^5.2.1",
         "express-rate-limit": "^8.5.2",
+        "jsonwebtoken": "^9.0.3",
         "mongoose": "^9.7.1",
         "zod": "^4.4.3"
+    },
+    "allowScripts": {
+        "@google/genai@2.9.0": true,
+        "esbuild@0.28.1": true,
+        "fsevents@2.3.3": true,
+        "protobufjs@7.6.4": true
     }
 }
