@@ -18,7 +18,7 @@ const Header = () => {
                     Library
                 </Link>
                 <Link
-                    to="/"
+                    to="/login"
                     className="text-md font-semibold border border-border-strong px-4 py-1.5 rounded-md bg-surface hover:bg-elevated"
                 >
                     Sign in

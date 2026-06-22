@@ -1,7 +1,11 @@
 import { useState } from 'react';
-import { Pill } from './hero/Pill';
+import { SocialPill } from './SocialPill';
 
-const socialMedia = ['Instagram', 'Facebook', 'TikTok'];
+const socialMedia = [
+    { name: 'Instagram', bgColor: 'bg-danger' },
+    { name: 'Facebook', bgColor: 'bg-azure' },
+    { name: 'TikTok', bgColor: 'bg-warning' },
+];
 
 export function ExtractForm({
     loading,
@@ -34,16 +38,20 @@ export function ExtractForm({
                     type="submit"
                     disabled={loading}
                     className="rounded-md bg-gradient-brand px-6 py-3 font-semibold text-bg
-                    disabled:opacity-50 shadow-shadow-glow hover:brightness-110 cursor-pointer"
+                    disabled:opacity-50 shadow-shadow-glow hover:brightness-110 cursor-pointer w-1/4"
                 >
                     {loading ? 'Analyzing...' : 'Analyze'}
                 </button>
             </form>
 
             <div className="flex items-center gap-4">
-                <p>Works with:</p>
-                {socialMedia.map((s, i) => (
-                    <Pill>{s}</Pill>
+                <p className="text-text-subtle">Works with</p>
+                {socialMedia.map((s) => (
+                    <SocialPill
+                        key={s.name}
+                        bgColor={s.bgColor}
+                        name={s.name}
+                    />
                 ))}
             </div>
         </div>
