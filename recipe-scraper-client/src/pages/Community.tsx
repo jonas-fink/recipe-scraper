@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { listCommunity, type Recipe } from '../api/recipes';
+import SearchBar from '../components/shared/SearchBar';
 
 const authorName = (userId: Recipe['userId']): string =>
     typeof userId === 'object' && userId?.name ? userId.name : 'Anonymous';
@@ -8,6 +9,7 @@ const Community = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [query, setQuery] = useState('');
 
     useEffect(() => {
         listCommunity()
@@ -19,18 +21,26 @@ const Community = () => {
     if (loading)
         return <p className="p-8 font-sans text-text-subtle">Loading…</p>;
 
+    const q = query.trim().toLowerCase();
+    const shown = recipes.filter(
+        (r) =>
+            q === '' ||
+            r.title.toLowerCase().includes(q) ||
+            (r.category ?? '').toLowerCase().includes(q),
+    );
+
     return (
-        <div className="flex w-full flex-col items-center gap-6 px-4 py-8 font-display">
-            <h2 className="text-2xl font-bold text-text">Community Recipes</h2>
+        <div className="flex w-full flex-col items-center gap-6 px-4 py-8 font-display max-w-6xl">
+            <SearchBar query={query} onChange={setQuery} />
 
             {error && <p className="font-sans text-danger">{error}</p>}
-            {recipes.length === 0 && (
+            {shown.length === 0 && (
                 <p className="font-sans text-text-subtle">
                     No published recipes yet.
                 </p>
             )}
 
-            {recipes.map((r) => (
+            {shown.map((r) => (
                 <div
                     key={r._id}
                     className="w-full max-w-2xl rounded-2xl border border-border bg-glass p-6 shadow-card backdrop-blur-md"

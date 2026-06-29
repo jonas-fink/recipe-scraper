@@ -5,7 +5,7 @@ const AppLayout = () => {
     return (
         <div className="flex flex-col min-h-screen font-sans antialiased">
             <Header />
-            <div className="flex flex-col gap-8 justify-center items-center pt-32">
+            <div className="flex flex-col gap-8 justify-center items-center">
                 <Outlet />
             </div>
         </div>

@@ -8,12 +8,17 @@ import {
     type RecipePatch,
 } from '../api/recipes';
 import { Pill } from '../components/hero/Pill';
+import FilterButton from '../components/library/FilterButton';
+import SearchBar from '../components/shared/SearchBar';
+import { AiOutlineStar } from 'react-icons/ai';
 
 const Library = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [favoritesOnly, setFavoritesOnly] = useState(false);
+    const [activeFilter, setActiveFilter] = useState('');
+    const [query, setQuery] = useState('');
 
     useEffect(() => {
         listRecipes()
@@ -27,23 +32,49 @@ const Library = () => {
         setRecipes((rs) => rs.map((r) => (r._id === id ? updated : r)));
     };
 
-    const shown = favoritesOnly ? recipes.filter((r) => r.isFavorite) : recipes;
+    const q = query.trim().toLowerCase();
+    const shown = recipes.filter(
+        (r) =>
+            (!favoritesOnly || r.isFavorite) &&
+            (activeFilter === '' || r.category === activeFilter) &&
+            (q === '' ||
+                r.title.toLowerCase().includes(q) ||
+                (r.category ?? '').toLowerCase().includes(q)),
+    );
 
     if (loading)
         return <p className="p-8 font-sans text-text-subtle">Loading…</p>;
 
     return (
         <div className="flex w-full flex-col items-center gap-6 px-4 py-8 font-display">
-            <div className="flex w-full max-w-6xl items-center justify-between">
-                <h2 className="text-2xl font-bold text-text">My Library</h2>
-                <label className="flex items-center gap-2 font-sans text-sm text-text-subtle">
-                    <input
-                        type="checkbox"
-                        checked={favoritesOnly}
-                        onChange={(e) => setFavoritesOnly(e.target.checked)}
+            <SearchBar query={query} onChange={setQuery} />
+            <div className="flex flex-col w-full max-w-6xl items-center justify-between gap-4">
+                <div className="flex gap-2">
+                    <FilterButton
+                        name="All"
+                        isActive={activeFilter === ''}
+                        onSelect={() => setActiveFilter('')}
                     />
-                    Favorites only
-                </label>
+                    {FOOD_CATEGORIES.map((c) => (
+                        <FilterButton
+                            key={c}
+                            name={c}
+                            isActive={activeFilter === c}
+                            onSelect={() => setActiveFilter(c)}
+                        />
+                    ))}
+                    <button
+                        onClick={() => setFavoritesOnly((v) => !v)}
+                        aria-pressed={favoritesOnly}
+                        className={`px-4 py-1.5 rounded-full cursor-pointer hover:brightness-110 ${
+                            favoritesOnly
+                                ? 'bg-gradient-brand text-black'
+                                : 'bg-elevated'
+                        }`}
+                    >
+                        <AiOutlineStar size={24} />
+                    </button>
+                </div>
             </div>
 
             {error && <p className="font-sans text-danger">{error}</p>}
