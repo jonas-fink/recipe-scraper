@@ -58,6 +58,29 @@ export const update: RequestHandler = async (req, res, next) => {
     }
 };
 
+/** POST /api/v1/recipes/:id/image — Bild zu Cloudinary hochladen (via fileUploadHandler) und imageUrl setzen. */
+export const uploadImage: RequestHandler = async (req, res, next) => {
+    try {
+        const { imageUrl } = req.body as { imageUrl?: string };
+        if (!imageUrl) {
+            res.status(400).json({ message: 'No image uploaded' });
+            return;
+        }
+        const updated = await Recipe.findOneAndUpdate(
+            { _id: req.params.id, userId: req.userId },
+            { imageUrl },
+            { returnDocument: 'after' },
+        );
+        if (!updated) {
+            res.status(404).json({ message: 'Recipe not found' });
+            return;
+        }
+        res.json({ data: updated });
+    } catch (err) {
+        next(err);
+    }
+};
+
 /** GET /api/v1/recipes/community — öffentlich publizierte Rezepte. */
 export const community: RequestHandler = async (_req, res, next) => {
     try {

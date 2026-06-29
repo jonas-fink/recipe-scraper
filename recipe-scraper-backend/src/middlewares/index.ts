@@ -4,3 +4,4 @@ export { default as validateQuery } from './validateQuery.ts';
 export { authRateLimiter, extractRateLimiter } from './rateLimiter.ts';
 export { default as protect } from './protect.ts';
 export { default as adminOnly } from './adminOnly.ts';
+export { default as fileUploadHandler } from './fileUploadHandler.ts';

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router';
 import {
     listRecipes,
     updateRecipe,
@@ -6,6 +7,7 @@ import {
     type Recipe,
     type RecipePatch,
 } from '../api/recipes';
+import { Pill } from '../components/hero/Pill';
 
 const Library = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -25,16 +27,14 @@ const Library = () => {
         setRecipes((rs) => rs.map((r) => (r._id === id ? updated : r)));
     };
 
-    const shown = favoritesOnly
-        ? recipes.filter((r) => r.isFavorite)
-        : recipes;
+    const shown = favoritesOnly ? recipes.filter((r) => r.isFavorite) : recipes;
 
     if (loading)
         return <p className="p-8 font-sans text-text-subtle">Loading…</p>;
 
     return (
         <div className="flex w-full flex-col items-center gap-6 px-4 py-8 font-display">
-            <div className="flex w-full max-w-2xl items-center justify-between">
+            <div className="flex w-full max-w-6xl items-center justify-between">
                 <h2 className="text-2xl font-bold text-text">My Library</h2>
                 <label className="flex items-center gap-2 font-sans text-sm text-text-subtle">
                     <input
@@ -51,69 +51,61 @@ const Library = () => {
                 <p className="font-sans text-text-subtle">No recipes yet.</p>
             )}
 
-            {shown.map((r) => (
-                <div
-                    key={r._id}
-                    className="w-full max-w-2xl rounded-2xl border border-border bg-glass p-6 shadow-card backdrop-blur-md"
-                >
-                    <div className="flex items-start justify-between gap-4">
-                        <h3 className="text-lg font-semibold text-text">
-                            {r.title}
-                        </h3>
-                        <button
-                            onClick={() =>
-                                patch(r._id!, { isFavorite: !r.isFavorite })
+            <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {shown.map((r) => (
+                    <div
+                        key={r._id}
+                        className="flex flex-col overflow-hidden rounded-2xl border border-border bg-glass shadow-card backdrop-blur-md"
+                    >
+                        <Link
+                            to={`/library/${r._id}`}
+                            style={
+                                r.imageUrl
+                                    ? { backgroundImage: `url(${r.imageUrl})` }
+                                    : undefined
                             }
-                            title="Toggle favorite"
-                            className="text-2xl leading-none"
+                            className={`relative block aspect-video bg-cover bg-center ${
+                                r.imageUrl ? '' : 'bg-gradient-brand'
+                            }`}
                         >
-                            {r.isFavorite ? '★' : '☆'}
-                        </button>
-                    </div>
+                            <button
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    patch(r._id!, {
+                                        isFavorite: !r.isFavorite,
+                                    });
+                                }}
+                                title="Toggle favorite"
+                                className="absolute right-2 top-2 text-2xl leading-none drop-shadow-lg"
+                            >
+                                {r.isFavorite ? '★' : '☆'}
+                            </button>
+                            <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent p-4">
+                                <h3 className="text-xl font-semibold text-white drop-shadow">
+                                    {r.title}
+                                </h3>
+                            </div>
+                        </Link>
 
-                    {r.imageUrl && (
-                        <img
-                            src={r.imageUrl}
-                            alt={r.title}
-                            className="mt-3 max-h-48 w-full rounded-md object-cover"
-                        />
-                    )}
-
-                    <div className="mt-4 flex flex-col gap-3 font-sans">
-                        <input
-                            list="food-categories"
-                            placeholder="Category"
-                            defaultValue={r.category ?? ''}
-                            onBlur={(e) =>
-                                patch(r._id!, {
-                                    category: e.target.value || null,
-                                })
-                            }
-                            className="rounded-md border border-border bg-surface px-3 py-2 text-text outline-none focus:border-border-strong"
-                        />
-                        <input
-                            placeholder="Image URL (Cloudinary later)"
-                            defaultValue={r.imageUrl ?? ''}
-                            onBlur={(e) =>
-                                patch(r._id!, {
-                                    imageUrl: e.target.value || null,
-                                })
-                            }
-                            className="rounded-md border border-border bg-surface px-3 py-2 text-text outline-none focus:border-border-strong"
-                        />
-                        <button
-                            onClick={() =>
-                                patch(r._id!, { isPublished: !r.isPublished })
-                            }
-                            className="self-start rounded-full bg-gradient-brand px-5 py-2 font-semibold text-bg"
-                        >
-                            {r.isPublished
-                                ? 'Unpublish'
-                                : 'Publish to community'}
-                        </button>
+                        <div className="flex flex-col gap-3 p-4 font-sans  items-start">
+                            <Pill>{r.category ?? ''}</Pill>
+                            <button
+                                onClick={() =>
+                                    patch(r._id!, {
+                                        isPublished: !r.isPublished,
+                                    })
+                                }
+                                className="self-end rounded-full bg-gradient-brand px-5 py-2 font-semibold text-bg cursor-pointer hover:brightness-110"
+                            >
+                                {r.isPublished
+                                    ? 'Unpublish'
+                                    : 'Publish to community'}
+                            </button>
+                        </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
 
             <datalist id="food-categories">
                 {FOOD_CATEGORIES.map((c) => (

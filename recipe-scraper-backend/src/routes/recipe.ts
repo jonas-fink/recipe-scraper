@@ -1,7 +1,19 @@
 import { Router } from 'express';
-import { validateBody, extractRateLimiter, protect } from '#middlewares';
+import {
+    validateBody,
+    extractRateLimiter,
+    protect,
+    fileUploadHandler,
+} from '#middlewares';
 import { extractSchema, saveRecipeSchema, updateRecipeSchema } from '#schemas';
-import { extract, create, list, update, community } from '#controllers';
+import {
+    extract,
+    create,
+    list,
+    update,
+    community,
+    uploadImage,
+} from '#controllers';
 
 const router = Router();
 
@@ -16,5 +28,6 @@ router.post(
 router.post('/', protect, validateBody(saveRecipeSchema), create);
 router.get('/', protect, list);
 router.patch('/:id', protect, validateBody(updateRecipeSchema), update);
+router.post('/:id/image', protect, fileUploadHandler, uploadImage);
 
 export default router;

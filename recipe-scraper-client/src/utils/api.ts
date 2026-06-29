@@ -38,11 +38,12 @@ async function request<T>(
     options: RequestInit = {},
     retry = true,
 ): Promise<T> {
+    const isForm = options.body instanceof FormData;
     const res = await fetch(`${BASE}${path}`, {
         ...options,
         credentials: 'include',
         headers: {
-            'Content-Type': 'application/json',
+            ...(isForm ? {} : { 'Content-Type': 'application/json' }),
             ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
             ...options.headers,
         },
@@ -84,5 +85,8 @@ export const api = {
     },
     put<T>(path: string, body?: unknown) {
         return request<T>(path, { method: 'PUT', body: JSON.stringify(body) });
+    },
+    upload<T>(path: string, form: FormData) {
+        return request<T>(path, { method: 'POST', body: form });
     },
 };

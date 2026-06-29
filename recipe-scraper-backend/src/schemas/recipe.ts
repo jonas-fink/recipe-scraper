@@ -40,9 +40,8 @@ export const saveRecipeSchema = recipeSchema.extend({
     imageUrl: z.url().optional(),
 });
 
-/** Body für PATCH /api/recipes/:id (Rezept-Metadaten aktualisieren) */
-export const updateRecipeSchema = z.object({
-    category: z.string().min(1).nullable().optional(),
+/** Body für PATCH /api/recipes/:id (Rezept-Metadaten + Inhalt aktualisieren) */
+export const updateRecipeSchema = recipeSchema.partial().extend({
     imageUrl: z.url().nullable().optional(),
     isPublished: z.boolean().optional(),
     isFavorite: z.boolean().optional(),

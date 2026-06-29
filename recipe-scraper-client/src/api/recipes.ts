@@ -34,7 +34,18 @@ export interface Recipe {
 }
 
 export type RecipePatch = Partial<
-    Pick<Recipe, 'category' | 'imageUrl' | 'isPublished' | 'isFavorite'>
+    Pick<
+        Recipe,
+        | 'title'
+        | 'ingredients'
+        | 'instructions'
+        | 'category'
+        | 'cookTimeMinutes'
+        | 'servings'
+        | 'imageUrl'
+        | 'isPublished'
+        | 'isFavorite'
+    >
 >;
 
 export const extractRecipe = (url: string) =>
@@ -49,3 +60,9 @@ export const updateRecipe = (id: string, patch: RecipePatch) =>
     api.patch<Recipe>(`/recipes/${id}`, patch);
 
 export const listCommunity = () => api.get<Recipe[]>('/recipes/community');
+
+export const uploadRecipeImage = (id: string, file: File) => {
+    const form = new FormData();
+    form.append('image', file);
+    return api.upload<Recipe>(`/recipes/${id}/image`, form);
+};

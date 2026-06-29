@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Library from './pages/Library';
+import RecipeDetail from './pages/RecipeDetail';
 import Community from './pages/Community';
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
                     <Route path="/community" element={<Community />} />
                     <Route element={<ProtectedRoute />}>
                         <Route path="/library" element={<Library />} />
+                        <Route path="/library/:id" element={<RecipeDetail />} />
                     </Route>
                 </Route>
             </Routes>
