@@ -25,6 +25,8 @@ export interface Recipe {
     sourceUrl: string;
     status?: string;
     category?: string | null;
+    cookTimeMinutes?: number | null;
+    servings?: number | null;
     imageUrl?: string | null;
     isPublished?: boolean;
     isFavorite?: boolean;

@@ -9,10 +9,13 @@ const Header = () => {
     return (
         <header className="w-full flex p-8 items-center justify-between bg-glass">
             <div className="flex gap-4 items-center justify-center">
-                <img src={logo} width={32} height={32} />
-                <h1 className="font-bold text-2xl text-text font-display">
-                    Reciply
-                </h1>
+                <Link to="/" className="flex gap-2">
+                    {' '}
+                    <img src={logo} width={32} height={32} />
+                    <h1 className="font-bold text-2xl text-text font-display">
+                        Reciply
+                    </h1>
+                </Link>
             </div>
             <div className="flex gap-8 items-center ">
                 <Link to="/" className="text-md font-semibold text-text-subtle">

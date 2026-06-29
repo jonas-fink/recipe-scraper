@@ -8,8 +8,26 @@ const valid = {
         { name: 'Salz', amount: null, unit: null },
     ],
     instructions: ['Kneten', 'Kochen'],
+    category: null,
+    cookTimeMinutes: null,
+    servings: null,
 };
 assert.ok(recipeSchema.safeParse(valid).success);
+
+// gefüllte Meta-Felder
+assert.ok(
+    recipeSchema.safeParse({
+        ...valid,
+        category: 'Dinner',
+        cookTimeMinutes: 30,
+        servings: 4,
+    }).success,
+);
+// cookTimeMinutes als String statt number/null
+assert.equal(
+    recipeSchema.safeParse({ ...valid, cookTimeMinutes: '30' }).success,
+    false,
+);
 
 // fehlender Titel
 assert.equal(recipeSchema.safeParse({ ...valid, title: '' }).success, false);

@@ -4,6 +4,7 @@ export {
     extractSchema,
     saveRecipeSchema,
     updateRecipeSchema,
+    CATEGORIES,
 } from './recipe.ts';
 export type { Recipe, Ingredient } from './recipe.ts';
 export * from './user.ts';

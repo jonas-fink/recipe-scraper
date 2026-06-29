@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from '@google/genai';
-import { recipeSchema, type Recipe } from '#schemas';
+import { recipeSchema, CATEGORIES, type Recipe } from '#schemas';
 
 const MODEL = 'gemini-2.5-flash';
 
@@ -22,14 +22,29 @@ const responseSchema = {
             },
         },
         instructions: { type: Type.ARRAY, items: { type: Type.STRING } },
+        category: { type: Type.STRING, nullable: true, enum: [...CATEGORIES] },
+        cookTimeMinutes: { type: Type.NUMBER, nullable: true },
+        servings: { type: Type.NUMBER, nullable: true },
     },
-    required: ['title', 'ingredients', 'instructions'],
+    required: [
+        'title',
+        'ingredients',
+        'instructions',
+        'category',
+        'cookTimeMinutes',
+        'servings',
+    ],
 };
 
 const PROMPT = `Du extrahierst aus dem folgenden Social-Media-Text ein Kochrezept.
 Gib Mengen als Zahl in "amount" und die Einheit (g, ml, Stück, EL, …) in "unit" an;
 wenn keine Menge/Einheit genannt wird, setze den Wert auf null. Übersetze nichts,
 behalte die Originalsprache. Ignoriere Hashtags, Emojis und Werbung.
+
+Wähle "category" aus genau dieser Liste: ${CATEGORIES.join(', ')}.
+Gib "cookTimeMinutes" als Gesamtzeit in Minuten (Zahl) und "servings" als Anzahl
+Portionen (Zahl) an. Setze category, cookTimeMinutes oder servings auf null, wenn
+die Information im Text nicht eindeutig genannt wird.
 
 TEXT:
 `;

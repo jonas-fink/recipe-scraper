@@ -24,6 +24,8 @@ const recipeSchema = new Schema(
         },
         imageUrl: { type: String, default: null },
         category: { type: String, default: null },
+        cookTimeMinutes: { type: Number, default: null },
+        servings: { type: Number, default: null },
         isPublished: { type: Boolean, default: false, index: true },
         isFavorite: { type: Boolean, default: false },
     },
