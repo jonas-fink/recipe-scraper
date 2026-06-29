@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { listCommunity, type Recipe } from '../api/recipes';
+import { listCommunity, type Recipe, FOOD_CATEGORIES } from '../api/recipes';
 import SearchBar from '../components/shared/SearchBar';
+import FilterButton from '../components/library/FilterButton';
 
 const authorName = (userId: Recipe['userId']): string =>
     typeof userId === 'object' && userId?.name ? userId.name : 'Anonymous';
@@ -10,6 +11,7 @@ const Community = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [query, setQuery] = useState('');
+    const [activeFilter, setActiveFilter] = useState('');
 
     useEffect(() => {
         listCommunity()
@@ -24,14 +26,31 @@ const Community = () => {
     const q = query.trim().toLowerCase();
     const shown = recipes.filter(
         (r) =>
-            q === '' ||
-            r.title.toLowerCase().includes(q) ||
-            (r.category ?? '').toLowerCase().includes(q),
+            (activeFilter === '' || r.category === activeFilter) &&
+            (q === '' ||
+                r.title.toLowerCase().includes(q) ||
+                (r.category ?? '').toLowerCase().includes(q)),
     );
 
     return (
         <div className="flex w-full flex-col items-center gap-6 px-4 py-8 font-display max-w-6xl">
             <SearchBar query={query} onChange={setQuery} />
+
+            <div className="flex gap-2">
+                <FilterButton
+                    name="All"
+                    isActive={activeFilter === ''}
+                    onSelect={() => setActiveFilter('')}
+                />
+                {FOOD_CATEGORIES.map((c) => (
+                    <FilterButton
+                        key={c}
+                        name={c}
+                        isActive={activeFilter === c}
+                        onSelect={() => setActiveFilter(c)}
+                    />
+                ))}
+            </div>
 
             {error && <p className="font-sans text-danger">{error}</p>}
             {shown.length === 0 && (
