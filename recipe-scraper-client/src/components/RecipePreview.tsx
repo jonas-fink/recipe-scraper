@@ -1,3 +1,4 @@
+import { AiOutlineClockCircle, AiOutlineMenu } from 'react-icons/ai';
 import { FOOD_CATEGORIES, type Recipe, type Ingredient } from '../api/recipes';
 
 const field =
@@ -43,13 +44,34 @@ export function RecipePreview({
         });
 
     return (
-        <div className="w-full max-w-5xl rounded-2xl border border-border bg-glass p-6 backdrop-blur-md shadow-card">
+        <div className="w-full max-w-5xl rounded-2xl border border-border bg-glass p-6 backdrop-blur-md shadow-card mb-16">
             <input
                 value={recipe.title}
                 onChange={(e) => onChange({ ...recipe, title: e.target.value })}
                 className={`${field} mb-5 w-full text-2xl font-display`}
             />
-            <div className="mb-5 flex flex-wrap gap-3">
+            <div className="mb-5 flex flex-wrap gap-8 justify-center items-center">
+                <div className="flex gap-2 items-center">
+                    {' '}
+                    <AiOutlineClockCircle className="text-mint" />
+                    <p className="text-text-muted">
+                        Total{' '}
+                        <span className="text-white">
+                            {recipe.cookTimeMinutes ?? ''} min
+                        </span>
+                    </p>
+                </div>
+                <div className="flex gap-2 items-center">
+                    {' '}
+                    <AiOutlineMenu className="text-text-muted" />
+                    <p className="text-text-muted">
+                        Steps:{' '}
+                        <span className="text-white">
+                            {recipe.instructions.length}
+                        </span>
+                    </p>
+                </div>
+
                 <select
                     value={recipe.category ?? ''}
                     onChange={(e) =>
@@ -58,7 +80,7 @@ export function RecipePreview({
                             category: e.target.value || null,
                         })
                     }
-                    className={`${field} flex-1 min-w-40`}
+                    className={`${field} flex-1 max-w-1/6 min-w-40`}
                 >
                     <option value="">Kategorie …</option>
                     {FOOD_CATEGORIES.map((c) => (
@@ -67,21 +89,6 @@ export function RecipePreview({
                         </option>
                     ))}
                 </select>
-                <input
-                    value={recipe.cookTimeMinutes ?? ''}
-                    type="number"
-                    placeholder="Minuten"
-                    onChange={(e) =>
-                        onChange({
-                            ...recipe,
-                            cookTimeMinutes:
-                                e.target.value === ''
-                                    ? null
-                                    : Number(e.target.value),
-                        })
-                    }
-                    className={`${field} w-32`}
-                />
                 <input
                     value={recipe.servings ?? ''}
                     type="number"
@@ -140,7 +147,7 @@ export function RecipePreview({
                             <button
                                 type="button"
                                 onClick={() => removeIngredient(i)}
-                                className="px-2 text-text-subtle hover:text-danger"
+                                className="px-2 text-text-subtle hover:text-danger cursor-pointer"
                                 aria-label="Zutat entfernen"
                             >
                                 ✕
@@ -155,19 +162,19 @@ export function RecipePreview({
                     <ol className="mb-6 flex flex-col gap-2">
                         {recipe.instructions.map((step, i) => (
                             <li key={i} className="flex gap-2">
-                                <span className="pt-2 text-text-subtle">
+                                <span className="pt-2 text-text-subtle w-8">
                                     {i + 1}.
                                 </span>
                                 <textarea
                                     value={step}
                                     rows={2}
                                     onChange={(e) => setStep(i, e.target.value)}
-                                    className={`${field} flex-1 resize-y`}
+                                    className={`${field} flex-1 resize-y field-sizing-content`}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => removeStep(i)}
-                                    className="px-2 text-text-subtle hover:text-danger"
+                                    className="px-2 text-text-subtle hover:text-danger cursor-pointer"
                                     aria-label="Schritt entfernen"
                                 >
                                     ✕

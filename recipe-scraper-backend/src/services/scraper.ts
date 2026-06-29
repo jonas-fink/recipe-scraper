@@ -44,8 +44,6 @@ const assertAllowedUrl = (url: string): URL => {
 
 /**
  * Extrahiert per yt-dlp den Beschreibungstext/Caption eines Reels o.ä.
- * ponytail: nur Caption/Beschreibung. Untertitel-Text und Whisper-Audio-Fallback
- *   (wenn `text` leer) hier später ergänzen — siehe KONTEXT.md Leiter-Stufe 2.
  */
 export const extractText = async (url: string): Promise<ScrapedText> => {
     const parsed = assertAllowedUrl(url);
@@ -64,7 +62,10 @@ export const extractText = async (url: string): Promise<ScrapedText> => {
             throw fail('Inhalt privat oder nicht verfügbar', 422);
         }
         if ((err as { code?: string }).code === 'ENOENT') {
-            throw fail('yt-dlp ist nicht installiert (brew install yt-dlp)', 500);
+            throw fail(
+                'yt-dlp ist nicht installiert (brew install yt-dlp)',
+                500,
+            );
         }
         throw fail('Konnte den Inhalt nicht abrufen', 502);
     }
@@ -82,7 +83,6 @@ export const parseDumpJson = (stdout: string, source: string): ScrapedText => {
     }
     const text = (data.description ?? '').trim();
     if (!text) {
-        // ponytail: hier später Audio → Whisper, wenn Caption leer.
         throw fail('Kein Beschreibungstext gefunden', 422);
     }
     return { source, title: data.title?.trim() || undefined, text };
