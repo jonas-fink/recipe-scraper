@@ -1,11 +1,28 @@
 import { useState } from 'react';
 import { SocialPill } from './SocialPill';
 import { ScaleLoader } from 'react-spinners';
+import {
+    AiOutlineFacebook,
+    AiOutlineInstagram,
+    AiOutlineTikTok,
+} from 'react-icons/ai';
 
 const socialMedia = [
-    { name: 'Instagram', bgColor: 'bg-danger' },
-    { name: 'Facebook', bgColor: 'bg-azure' },
-    { name: 'TikTok', bgColor: 'bg-warning' },
+    {
+        name: 'Instagram',
+        bgColor: 'bg-danger',
+        icon: <AiOutlineInstagram size={32} />,
+    },
+    {
+        name: 'Facebook',
+        bgColor: 'bg-azure',
+        icon: <AiOutlineFacebook size={32} />,
+    },
+    {
+        name: 'TikTok',
+        bgColor: 'bg-warning',
+        icon: <AiOutlineTikTok size={32} />,
+    },
 ];
 
 export function ExtractForm({
@@ -56,13 +73,12 @@ export function ExtractForm({
 
             <div className="flex items-center gap-4 md:flex-row flex-col">
                 <p className="text-text-subtle">Works with</p>
-                {socialMedia.map((s) => (
-                    <SocialPill
-                        key={s.name}
-                        bgColor={s.bgColor}
-                        name={s.name}
-                    />
-                ))}
+                <div className="flex gap-4">
+                    {' '}
+                    {socialMedia.map((s) => (
+                        <SocialPill key={s.name} icon={s.icon} />
+                    ))}
+                </div>
             </div>
         </div>
     );
