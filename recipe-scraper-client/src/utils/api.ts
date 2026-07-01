@@ -1,4 +1,5 @@
-const BASE = '/api/v1';
+// Empty in dev (Vite proxy handles /api); set VITE_API_URL to a full origin in prod.
+const BASE = `${import.meta.env.VITE_API_URL ?? ''}/api/v1`;
 
 let accessToken: string | null = null;
 

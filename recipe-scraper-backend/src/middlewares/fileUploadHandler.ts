@@ -8,7 +8,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-const fileUploadHandler: RequestHandler = (req, res, next) => {
+const fileUploadHandler: RequestHandler = (req, _res, next) => {
     const form = formidable({
         multiples: false,
         maxFileSize: 5 * 1024 * 1024,
@@ -19,7 +19,7 @@ const fileUploadHandler: RequestHandler = (req, res, next) => {
 
     form.parse(req, async (err, fields, files) => {
         if (err) {
-            res.status(400).json({ error: err.message });
+            next(new Error(err.message, { cause: { status: 400 } }));
             return;
         }
 
@@ -44,8 +44,12 @@ const fileUploadHandler: RequestHandler = (req, res, next) => {
                 );
                 req.body = { ...flatFields, imageUrl: result.secure_url };
                 next();
-            } catch (uploadError) {
-                res.status(500).json({ error: 'Cloudinary upload failed' });
+            } catch {
+                next(
+                    new Error('Cloudinary upload failed', {
+                        cause: { status: 500 },
+                    }),
+                );
                 return;
             }
         } else {

@@ -1,5 +1,7 @@
-import { connectDB } from '#config';
+import { connectDB, validateEnv } from '#config';
 import app from './app.ts';
+
+validateEnv();
 
 const PORT = process.env.PORT || 8080;
 

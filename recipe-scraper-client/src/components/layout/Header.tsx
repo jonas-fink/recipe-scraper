@@ -1,8 +1,11 @@
 import logo from '/src/assets/reciply-mark.svg';
 import { Link, NavLink } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
-import { AiOutlineLogout } from 'react-icons/ai';
-import { RiUserCommunityLine, RiBookOpenLine } from 'react-icons/ri';
+import {
+    RiUserCommunityLine,
+    RiBookOpenLine,
+    RiLogoutBoxLine,
+} from 'react-icons/ri';
 
 const Header = () => {
     const { user, logout } = useAuth();
@@ -36,7 +39,7 @@ const Header = () => {
                         aria-label="Logout"
                         className="hover:text-danger transition-all duration-300 ease-in cursor-pointer"
                     >
-                        <AiOutlineLogout size={24} />
+                        <RiLogoutBoxLine size={24} />
                     </button>
                 ) : (
                     <Link

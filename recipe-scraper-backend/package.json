@@ -73,6 +73,7 @@
         "express-rate-limit": "^8.5.2",
         "formidable": "^3.5.4",
         "jsonwebtoken": "^9.0.3",
+        "lru-cache": "^11.5.1",
         "mongoose": "^9.7.1",
         "zod": "^4.4.3"
     },

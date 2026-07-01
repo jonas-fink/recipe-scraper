@@ -28,6 +28,12 @@ router.post(
 router.post('/', protect, validateBody(saveRecipeSchema), create);
 router.get('/', protect, list);
 router.patch('/:id', protect, validateBody(updateRecipeSchema), update);
-router.post('/:id/image', protect, fileUploadHandler, uploadImage);
+router.post(
+    '/:id/image',
+    protect,
+    extractRateLimiter,
+    fileUploadHandler,
+    uploadImage,
+);
 
 export default router;

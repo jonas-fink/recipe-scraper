@@ -11,10 +11,16 @@ const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
         });
     }
 
+    // Mongoose duplicate key (e.g. unique email on register) → 409.
+    if (err.code === 11000) {
+        res.status(409).json({ message: 'Already exists' });
+        return;
+    }
+
     const statusCode =
         err.status ||
         err.cause?.status ||
-        (err.name === 'ValidationError' ? 400 : 500);
+        (err.name === 'ValidationError' || err.name === 'CastError' ? 400 : 500);
 
     res.status(statusCode).json({
         message: err.message || 'Internal Server error',
