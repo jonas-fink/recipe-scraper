@@ -47,24 +47,23 @@
         "build": "tsc -p tsconfig.build.json",
         "test": "node --import tsx --test \"src/**/*.test.ts\"",
         "prestart": "npm run build",
-        "start": "node dist/app.js"
+        "start": "node dist/server.js"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "type": "module",
     "devDependencies": {
-        "@types/cookie-parser": "^1.4.10",
-        "@types/cors": "^2.8.19",
-        "@types/express": "^5.0.6",
-        "@types/jsonwebtoken": "^9.0.10",
-        "@types/node": "^26.0.0",
-        "tsx": "^4.22.4",
-        "typescript": "^6.0.3"
+        "tsx": "^4.22.4"
     },
     "dependencies": {
         "@google/genai": "^2.9.0",
+        "@types/cookie-parser": "^1.4.10",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.6",
         "@types/formidable": "^3.5.1",
+        "@types/jsonwebtoken": "^9.0.10",
+        "@types/node": "^26.0.0",
         "bcryptjs": "^3.0.3",
         "cloudinary": "^2.10.0",
         "cookie-parser": "^1.4.7",
@@ -75,6 +74,7 @@
         "jsonwebtoken": "^9.0.3",
         "lru-cache": "^11.5.1",
         "mongoose": "^9.7.1",
+        "typescript": "^6.0.3",
         "zod": "^4.4.3"
     },
     "allowScripts": {
