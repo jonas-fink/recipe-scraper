@@ -44,7 +44,7 @@ export function RecipePreview({
         });
 
     return (
-        <div className="w-full max-w-5xl rounded-2xl border border-border bg-glass p-6 backdrop-blur-md shadow-card mb-16">
+        <div className="w-full max-w-5xl rounded-2xl border border-border bg-glass p-4 md:p-6 backdrop-blur-md shadow-card mb-16">
             <input
                 value={recipe.title}
                 onChange={(e) => onChange({ ...recipe, title: e.target.value })}
@@ -124,7 +124,7 @@ export function RecipePreview({
                                                 : Number(e.target.value),
                                     })
                                 }
-                                className={`${field} w-24`}
+                                className={`${field} w-16 shrink-0`}
                             />
                             <input
                                 value={ing.unit ?? ''}
@@ -134,7 +134,7 @@ export function RecipePreview({
                                         unit: e.target.value || null,
                                     })
                                 }
-                                className={`${field} w-16`}
+                                className={`${field} w-14 shrink-0`}
                             />
                             <input
                                 value={ing.name}
@@ -142,7 +142,7 @@ export function RecipePreview({
                                 onChange={(e) =>
                                     setIngredient(i, { name: e.target.value })
                                 }
-                                className={`${field} flex-1`}
+                                className={`${field} min-w-0 flex-1`}
                             />
                             <button
                                 type="button"
@@ -169,7 +169,7 @@ export function RecipePreview({
                                     value={step}
                                     rows={2}
                                     onChange={(e) => setStep(i, e.target.value)}
-                                    className={`${field} flex-1 resize-y field-sizing-content`}
+                                    className={`${field} min-w-0 flex-1 resize-y field-sizing-content`}
                                 />
                                 <button
                                     type="button"
