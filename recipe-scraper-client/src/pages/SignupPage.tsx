@@ -24,16 +24,14 @@ const SignupPage = () => {
         }
     };
     return (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 w-full max-w-2xl px-4 mt-16">
             <div className="flex flex-col text-left gap-2">
                 <h1 className="font-display text-5xl text-text">
                     Create your account
                 </h1>
-                <p className="font-sans text-text-muted">
-                    Sign up for Reciply
-                </p>
+                <p className="font-sans text-text-muted">Sign up for Reciply</p>
             </div>
-            <div className="bg-surface w-3xl p-2 rounded-md border border-border-strong hover:shadow-glow">
+            <div className="bg-surface w-full p-2 rounded-md border border-border-strong hover:shadow-glow">
                 <div className="flex flex-col w-full justify-center items-center">
                     <form
                         onSubmit={handleSubmit(onSubmit)}
@@ -115,11 +113,9 @@ const SignupPage = () => {
                                 type="submit"
                                 disabled={isSubmitting}
                                 className="rounded-md bg-gradient-brand px-6 py-3 font-semibold text-bg
-                    disabled:opacity-50 shadow-shadow-glow hover:brightness-110 cursor-pointer w-1/4"
+                    disabled:opacity-50 shadow-shadow-glow hover:brightness-110 cursor-pointer w-full sm:w-1/4"
                             >
-                                {isSubmitting
-                                    ? 'creating...'
-                                    : 'sign up'}
+                                {isSubmitting ? 'creating...' : 'sign up'}
                             </button>
                         </div>
                     </form>

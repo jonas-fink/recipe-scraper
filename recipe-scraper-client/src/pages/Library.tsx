@@ -55,7 +55,7 @@ const Library = () => {
         <div className="flex w-full flex-col items-center gap-6 px-4 py-8 font-display">
             <SearchBar query={query} onChange={setQuery} />
             <div className="flex flex-col w-full max-w-6xl items-center justify-between gap-4">
-                <div className="flex gap-2">
+                <div className="flex w-full gap-2 flex-nowrap overflow-x-auto scroll-smooth">
                     <FilterButton
                         name="All"
                         isActive={activeFilter === ''}

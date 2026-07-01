@@ -37,7 +37,7 @@ const Community = () => {
         <div className="flex w-full flex-col items-center gap-6 px-4 py-8 font-display max-w-6xl">
             <SearchBar query={query} onChange={setQuery} />
 
-            <div className="flex gap-2">
+            <div className="flex w-full gap-2 flex-nowrap overflow-x-auto scroll-smooth">
                 <FilterButton
                     name="All"
                     isActive={activeFilter === ''}
@@ -60,34 +60,43 @@ const Community = () => {
                 </p>
             )}
 
-            {shown.map((r) => (
-                <Link
-                    key={r._id}
-                    to={`/community/${r._id}`}
-                    className="w-full max-w-2xl rounded-2xl border border-border bg-glass p-6 shadow-card backdrop-blur-md transition hover:brightness-110"
-                >
-                    <div className="flex items-baseline justify-between gap-4">
-                        <h3 className="text-lg font-semibold text-text">
-                            {r.title}
-                        </h3>
-                        <span className="font-sans text-sm text-text-subtle">
-                            by {authorName(r.userId)}
-                        </span>
-                    </div>
-                    {r.category && (
-                        <span className="mt-1 inline-block font-sans text-sm text-text-subtle">
-                            {r.category}
-                        </span>
-                    )}
-                    {r.imageUrl && (
-                        <img
-                            src={r.imageUrl}
-                            alt={r.title}
-                            className="mt-3 max-h-48 w-full rounded-md object-cover"
-                        />
-                    )}
-                </Link>
-            ))}
+            <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {shown.map((r) => (
+                    <Link
+                        key={r._id}
+                        to={`/community/${r._id}`}
+                        className="flex flex-col overflow-hidden rounded-2xl border border-border bg-glass shadow-card backdrop-blur-md transition hover:brightness-110"
+                    >
+                        <div
+                            style={
+                                r.imageUrl
+                                    ? { backgroundImage: `url(${r.imageUrl})` }
+                                    : undefined
+                            }
+                            className={`relative block aspect-video bg-cover bg-center ${
+                                r.imageUrl ? '' : 'bg-gradient-brand'
+                            }`}
+                        >
+                            <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent p-4">
+                                <h3 className="text-xl font-semibold text-white drop-shadow">
+                                    {r.title}
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div className="flex items-baseline justify-between gap-4 p-4 font-sans">
+                            {r.category && (
+                                <span className="text-sm text-text-subtle">
+                                    {r.category}
+                                </span>
+                            )}
+                            <span className="ml-auto text-sm text-text-subtle">
+                                by {authorName(r.userId)}
+                            </span>
+                        </div>
+                    </Link>
+                ))}
+            </div>
         </div>
     );
 };

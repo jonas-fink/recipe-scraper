@@ -7,7 +7,7 @@ type FilterButtonProps = {
 const FilterButton = ({ name, isActive, onSelect }: FilterButtonProps) => {
     return (
         <button
-            className={`px-4 py-1.5 rounded-full ${isActive ? 'bg-gradient-brand text-black' : 'bg-elevated'} cursor-pointer hover:brightness-110`}
+            className={`px-4 py-1.5 rounded-full ${isActive ? 'bg-gradient-brand text-black' : 'bg-elevated'} cursor-pointer hover:brightness-110 shrink-0`}
             onClick={onSelect}
         >
             {name}

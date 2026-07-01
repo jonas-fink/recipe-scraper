@@ -49,7 +49,7 @@ const LandingPage = () => {
     };
 
     return (
-        <div className="flex w-full flex-col items-center gap-16 px-4 font-display">
+        <div className="flex max-w-5xl flex-col items-center gap-16 px-4 font-display">
             <Hero />
             <ExtractForm loading={loading} onSubmit={handleExtract} />
 

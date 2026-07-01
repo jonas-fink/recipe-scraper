@@ -24,7 +24,7 @@ const LoginPage = () => {
         }
     };
     return (
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-8 mt-16 w-full max-w-2xl px-4">
             <div className="flex flex-col text-left gap-2">
                 <h1 className="font-display text-5xl text-text">
                     Welcome back
@@ -33,8 +33,8 @@ const LoginPage = () => {
                     Log in to your Reciply account
                 </p>
             </div>
-            <div className="bg-surface w-3xl p-2 rounded-md border border-border-strong hover:shadow-glow">
-                <div className="flex flex-col w-full justify-center items-center">
+            <div className="bg-surface w-full p-2 rounded-md border border-border-strong hover:shadow-glow">
+                <div className="flex flex-col justify-center items-center">
                     <form
                         onSubmit={handleSubmit(onSubmit)}
                         className="flex flex-col gap-4 w-full p-8"
@@ -94,7 +94,7 @@ const LoginPage = () => {
                                 type="submit"
                                 disabled={isSubmitting}
                                 className="rounded-md bg-gradient-brand px-6 py-3 font-semibold text-bg
-                    disabled:opacity-50 shadow-shadow-glow hover:brightness-110 cursor-pointer w-1/4"
+                    disabled:opacity-50 shadow-shadow-glow hover:brightness-110 cursor-pointer w-full sm:w-1/4"
                             >
                                 {isSubmitting ? 'signing in...' : 'sign in'}
                             </button>
