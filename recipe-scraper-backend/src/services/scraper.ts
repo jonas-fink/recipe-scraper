@@ -3,6 +3,9 @@ import { promisify } from 'node:util';
 
 const execFileAsync = promisify(execFile);
 
+// System-Binary, kein npm-Paket. Lokal via brew, auf Render im Build heruntergeladen.
+const YTDLP = process.env.YTDLP_PATH ?? 'yt-dlp';
+
 const ALLOWED_HOSTS = [
     'instagram.com',
     'facebook.com',
@@ -50,7 +53,7 @@ export const extractText = async (url: string): Promise<ScrapedText> => {
 
     let stdout: string;
     try {
-        ({ stdout } = await execFileAsync('yt-dlp', [
+        ({ stdout } = await execFileAsync(YTDLP, [
             '--dump-json',
             '--no-warnings',
             '--skip-download',
