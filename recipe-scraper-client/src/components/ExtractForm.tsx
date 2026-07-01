@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SocialPill } from './SocialPill';
+import { ScaleLoader } from 'react-spinners';
 
 const socialMedia = [
     { name: 'Instagram', bgColor: 'bg-danger' },
@@ -37,10 +38,19 @@ export function ExtractForm({
                 <button
                     type="submit"
                     disabled={loading}
-                    className="rounded-md bg-gradient-brand px-6 py-3 font-semibold text-bg w-full md:w-1/3
+                    className="flex items-center justify-center rounded-md bg-gradient-brand px-6 py-3 font-semibold text-bg w-full md:w-1/3
                     disabled:opacity-50 shadow-shadow-glow hover:brightness-110 cursor-pointer"
                 >
-                    {loading ? 'Analyzing...' : 'Analyze'}
+                    {loading ? (
+                        <ScaleLoader
+                            height={24}
+                            radius={2}
+                            margin={2}
+                            barCount={5}
+                        />
+                    ) : (
+                        'Analyze'
+                    )}
                 </button>
             </form>
 

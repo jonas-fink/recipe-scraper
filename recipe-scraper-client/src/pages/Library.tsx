@@ -11,7 +11,7 @@ import {
 import { Pill } from '../components/hero/Pill';
 import FilterButton from '../components/library/FilterButton';
 import SearchBar from '../components/shared/SearchBar';
-import { AiOutlineStar } from 'react-icons/ai';
+import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
 
 const Library = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -53,7 +53,26 @@ const Library = () => {
 
     return (
         <div className="flex w-full flex-col items-center gap-6 px-4 py-8 font-display">
-            <SearchBar query={query} onChange={setQuery} />
+            <div className="flex gap-4 w-full justify-center items-center">
+                {' '}
+                <SearchBar query={query} onChange={setQuery} />{' '}
+                <button
+                    onClick={() => setFavoritesOnly((v) => !v)}
+                    aria-pressed={favoritesOnly}
+                    className={`p-2 rounded-full cursor-pointer hover:brightness-110 ${
+                        favoritesOnly
+                            ? 'bg-gradient-brand text-black'
+                            : 'bg-elevated'
+                    }`}
+                >
+                    {favoritesOnly ? (
+                        <AiFillStar size={24} />
+                    ) : (
+                        <AiOutlineStar size={24} />
+                    )}
+                </button>
+            </div>
+
             <div className="flex flex-col w-full max-w-6xl items-center justify-between gap-4">
                 <div className="flex w-full gap-2 flex-nowrap overflow-x-auto scroll-smooth">
                     <FilterButton
@@ -69,25 +88,12 @@ const Library = () => {
                             onSelect={() => setActiveFilter(c)}
                         />
                     ))}
-                    <button
-                        onClick={() => setFavoritesOnly((v) => !v)}
-                        aria-pressed={favoritesOnly}
-                        className={`px-4 py-1.5 rounded-full cursor-pointer hover:brightness-110 ${
-                            favoritesOnly
-                                ? 'bg-gradient-brand text-black'
-                                : 'bg-elevated'
-                        }`}
-                    >
-                        <AiOutlineStar size={24} />
-                    </button>
                 </div>
             </div>
-
             {error && <p className="font-sans text-danger">{error}</p>}
             {shown.length === 0 && (
                 <p className="font-sans text-text-subtle">No recipes yet.</p>
             )}
-
             <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {shown.map((r) => (
                     <div
@@ -114,9 +120,13 @@ const Library = () => {
                                     });
                                 }}
                                 title="Toggle favorite"
-                                className="absolute right-2 top-2 text-2xl leading-none drop-shadow-lg"
+                                className="absolute right-2 top-2 text-2xl leading-none drop-shadow-lg cursor-pointer"
                             >
-                                {r.isFavorite ? '★' : '☆'}
+                                {r.isFavorite ? (
+                                    <AiFillStar size={32} />
+                                ) : (
+                                    <AiOutlineStar size={32} />
+                                )}
                             </button>
                             <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent p-4">
                                 <h3 className="text-xl font-semibold text-white drop-shadow">
@@ -153,7 +163,6 @@ const Library = () => {
                     </div>
                 ))}
             </div>
-
             <datalist id="food-categories">
                 {FOOD_CATEGORIES.map((c) => (
                     <option key={c} value={c} />

@@ -2,7 +2,7 @@ import { Pill } from './hero/Pill';
 
 const Hero = () => {
     return (
-        <div className="flex flex-col gap-8 md:pt-32 pt-8">
+        <div className="flex flex-col gap-8  pt-8">
             <div className="flex items-center justify-center">
                 <Pill>Paste · Parse · Cook</Pill>
             </div>

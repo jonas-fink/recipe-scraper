@@ -7,6 +7,7 @@ import {
     type Recipe,
 } from '../api/recipes';
 import { useAuth } from '../context/AuthContext';
+import { RiArrowLeftLine } from 'react-icons/ri';
 
 const authorName = (userId: Recipe['userId']): string =>
     typeof userId === 'object' && userId?.name ? userId.name : 'Anonymous';
@@ -22,7 +23,7 @@ const CommunityDetail = () => {
     const [saved, setSaved] = useState(false);
     const [alreadyInLibrary, setAlreadyInLibrary] = useState(false);
 
-    // ponytail: reuse listCommunity() instead of a GET /:id route — mirrors RecipeDetail
+    //reuse listCommunity() instead of a GET /:id route — mirrors RecipeDetail
     useEffect(() => {
         listCommunity()
             .then((rs) => setRecipe(rs.find((r) => r._id === id) ?? null))
@@ -74,8 +75,11 @@ const CommunityDetail = () => {
     return (
         <div className="flex w-full flex-col items-center gap-6 px-4 py-8">
             <div className="flex w-full max-w-5xl items-center justify-between font-sans">
-                <Link to="/community" className="text-mint hover:underline">
-                    ← Back to community
+                <Link
+                    to="/community"
+                    className="text-text-muted hover:text-primary"
+                >
+                    <RiArrowLeftLine size={24} />
                 </Link>
                 <button
                     onClick={add}

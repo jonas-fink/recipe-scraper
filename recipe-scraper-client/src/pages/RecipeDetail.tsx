@@ -7,6 +7,8 @@ import {
     uploadRecipeImage,
     type Recipe,
 } from '../api/recipes';
+import { RiArrowLeftLine, RiCameraLine, RiImageLine } from 'react-icons/ri';
+import { PuffLoader } from 'react-spinners';
 
 const RecipeDetail = () => {
     const { id } = useParams();
@@ -16,7 +18,6 @@ const RecipeDetail = () => {
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
 
-    // ponytail: reuse listRecipes() instead of a GET /:id route — personal library is small
     useEffect(() => {
         listRecipes()
             .then((rs) => setRecipe(rs.find((r) => r._id === id) ?? null))
@@ -64,19 +65,40 @@ const RecipeDetail = () => {
     return (
         <div className="flex w-full flex-col items-center gap-6 px-4 py-8">
             <div className="flex w-full max-w-5xl items-center justify-between font-sans">
-                <Link to="/library" className="text-mint hover:underline">
-                    ← Back to library
+                <Link
+                    to="/library"
+                    className="text-text-muted hover:text-primary"
+                >
+                    <RiArrowLeftLine size={24} />
                 </Link>
-                <label className="cursor-pointer rounded-full bg-gradient-brand px-5 py-2 font-semibold text-bg hover:brightness-110">
-                    {uploading ? 'Uploading…' : 'Bild hochladen'}
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={onImage}
-                        disabled={uploading}
-                        className="hidden"
-                    />
-                </label>
+                <div className="flex items-center gap-2">
+                    <label className="flex cursor-pointer justify-center items-center gap-2 rounded-full bg-gradient-brand p-2 font-semibold text-bg hover:brightness-110">
+                        {uploading ? (
+                            <PuffLoader size={50} />
+                        ) : (
+                            <RiImageLine size={32} />
+                        )}
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={onImage}
+                            disabled={uploading}
+                            className="hidden"
+                        />
+                    </label>
+                    <label className="flex cursor-pointer items-center gap-2 rounded-full bg-gradient-brand p-2 font-semibold text-bg hover:brightness-110">
+                        <RiCameraLine size={32} />
+
+                        <input
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            onChange={onImage}
+                            disabled={uploading}
+                            className="hidden"
+                        />
+                    </label>
+                </div>
             </div>
 
             {error && <p className="font-sans text-danger">{error}</p>}
