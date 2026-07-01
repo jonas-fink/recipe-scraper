@@ -1,10 +1,14 @@
 import logo from '/src/assets/reciply-mark.svg';
-import { Link } from 'react-router';
+import { Link, NavLink } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import { AiOutlineLogout } from 'react-icons/ai';
+import { RiUserCommunityLine, RiBookOpenLine } from 'react-icons/ri';
 
 const Header = () => {
     const { user, logout } = useAuth();
+
+    const navClass = ({ isActive }: { isActive: boolean }) =>
+        `text-md font-semibold ${isActive ? 'text-azure text-shadow-accent hover:text-azure-soft' : 'text-text-muted'}`;
 
     return (
         <header className="w-full flex p-8 items-center justify-between bg-glass">
@@ -18,21 +22,14 @@ const Header = () => {
                 </Link>
             </div>
             <div className="flex gap-8 items-center ">
-                <Link to="/" className="text-md font-semibold text-text-subtle">
-                    How it works
-                </Link>
-                <Link
-                    to="/community"
-                    className="text-md font-semibold text-text-subtle"
-                >
-                    Community
-                </Link>
-                <Link
-                    to="/library"
-                    className="text-md font-semibold text-text-subtle"
-                >
-                    Library
-                </Link>
+                <NavLink to="/community" className={navClass}>
+                    <RiUserCommunityLine size={36} />
+                    {/* Community */}
+                </NavLink>
+                <NavLink to="/library" className={navClass}>
+                    <RiBookOpenLine size={36} />
+                    {/* Library */}
+                </NavLink>
                 {user ? (
                     <button
                         onClick={logout}
