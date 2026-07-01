@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import {
     listRecipes,
+    listCommunity,
     updateRecipe,
     FOOD_CATEGORIES,
     type Recipe,
@@ -19,12 +20,17 @@ const Library = () => {
     const [favoritesOnly, setFavoritesOnly] = useState(false);
     const [activeFilter, setActiveFilter] = useState('');
     const [query, setQuery] = useState('');
+    const [communityUrls, setCommunityUrls] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         listRecipes()
             .then(setRecipes)
             .catch((e) => setError((e as Error).message))
             .finally(() => setLoading(false));
+        // Source URLs already in the community — used to block duplicate publishing.
+        listCommunity()
+            .then((rs) => setCommunityUrls(new Set(rs.map((r) => r.sourceUrl))))
+            .catch(() => {});
     }, []);
 
     const patch = async (id: string, patch: RecipePatch) => {
@@ -121,18 +127,28 @@ const Library = () => {
 
                         <div className="flex flex-col gap-3 p-4 font-sans  items-start">
                             <Pill>{r.category ?? ''}</Pill>
-                            <button
-                                onClick={() =>
-                                    patch(r._id!, {
-                                        isPublished: !r.isPublished,
-                                    })
-                                }
-                                className="self-end rounded-full bg-gradient-brand px-5 py-2 font-semibold text-bg cursor-pointer hover:brightness-110"
-                            >
-                                {r.isPublished
-                                    ? 'Unpublish'
-                                    : 'Publish to community'}
-                            </button>
+                            {(() => {
+                                const inCommunity =
+                                    !r.isPublished &&
+                                    communityUrls.has(r.sourceUrl);
+                                return (
+                                    <button
+                                        onClick={() =>
+                                            patch(r._id!, {
+                                                isPublished: !r.isPublished,
+                                            })
+                                        }
+                                        disabled={inCommunity}
+                                        className="self-end rounded-full bg-gradient-brand px-5 py-2 font-semibold text-bg cursor-pointer hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                                    >
+                                        {r.isPublished
+                                            ? 'Unpublish'
+                                            : inCommunity
+                                              ? 'Already in community'
+                                              : 'Publish to community'}
+                                    </button>
+                                );
+                            })()}
                         </div>
                     </div>
                 ))}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router';
 import { listCommunity, type Recipe, FOOD_CATEGORIES } from '../api/recipes';
 import SearchBar from '../components/shared/SearchBar';
 import FilterButton from '../components/library/FilterButton';
@@ -60,9 +61,10 @@ const Community = () => {
             )}
 
             {shown.map((r) => (
-                <div
+                <Link
                     key={r._id}
-                    className="w-full max-w-2xl rounded-2xl border border-border bg-glass p-6 shadow-card backdrop-blur-md"
+                    to={`/community/${r._id}`}
+                    className="w-full max-w-2xl rounded-2xl border border-border bg-glass p-6 shadow-card backdrop-blur-md transition hover:brightness-110"
                 >
                     <div className="flex items-baseline justify-between gap-4">
                         <h3 className="text-lg font-semibold text-text">
@@ -84,7 +86,7 @@ const Community = () => {
                             className="mt-3 max-h-48 w-full rounded-md object-cover"
                         />
                     )}
-                </div>
+                </Link>
             ))}
         </div>
     );

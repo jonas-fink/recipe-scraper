@@ -54,6 +54,19 @@ export const extractRecipe = (url: string) =>
 export const saveRecipe = (recipe: Recipe) =>
     api.post<Recipe>('/recipes', recipe);
 
+// Snapshot a community recipe into the current user's library as an independent copy.
+export const addCommunityRecipeToLibrary = (r: Recipe) =>
+    saveRecipe({
+        title: r.title,
+        ingredients: r.ingredients,
+        instructions: r.instructions,
+        category: r.category ?? null,
+        cookTimeMinutes: r.cookTimeMinutes ?? null,
+        servings: r.servings ?? null,
+        sourceUrl: r.sourceUrl,
+        ...(r.imageUrl ? { imageUrl: r.imageUrl } : {}),
+    } as Recipe);
+
 export const listRecipes = () => api.get<Recipe[]>('/recipes');
 
 export const updateRecipe = (id: string, patch: RecipePatch) =>

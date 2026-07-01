@@ -17,6 +17,12 @@ export const extract: RequestHandler = async (req, res, next) => {
 /** POST /api/v1/recipes — vom User bestätigtes/editiertes Rezept speichern. */
 export const create: RequestHandler = async (req, res, next) => {
     try {
+        // ponytail: sourceUrl is the recipe identity — no two library copies of the same source
+        const { sourceUrl } = req.body as { sourceUrl: string };
+        if (await Recipe.exists({ userId: req.userId, sourceUrl })) {
+            res.status(409).json({ message: 'Recipe already in your library' });
+            return;
+        }
         const saved = await Recipe.create({
             ...req.body,
             userId: req.userId,
@@ -43,6 +49,28 @@ export const list: RequestHandler = async (req, res, next) => {
 /** PATCH /api/v1/recipes/:id — eigene Rezept-Metadaten aktualisieren. */
 export const update: RequestHandler = async (req, res, next) => {
     try {
+        // Prevent publishing a recipe the community already has (same source).
+        if (req.body.isPublished === true) {
+            const recipe = await Recipe.findOne({
+                _id: req.params.id,
+                userId: req.userId,
+            });
+            if (!recipe) {
+                res.status(404).json({ message: 'Recipe not found' });
+                return;
+            }
+            const dup = await Recipe.exists({
+                _id: { $ne: recipe._id },
+                isPublished: true,
+                sourceUrl: recipe.sourceUrl,
+            });
+            if (dup) {
+                res.status(409).json({
+                    message: 'This recipe is already published to the community',
+                });
+                return;
+            }
+        }
         const updated = await Recipe.findOneAndUpdate(
             { _id: req.params.id, userId: req.userId },
             req.body,
