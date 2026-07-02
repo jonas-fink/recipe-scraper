@@ -11,6 +11,7 @@ import {
 import { Pill } from '../components/hero/Pill';
 import FilterButton from '../components/library/FilterButton';
 import SearchBar from '../components/shared/SearchBar';
+import { CardGridSkeleton } from '../components/Skeletons';
 import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
 
 const Library = () => {
@@ -47,9 +48,6 @@ const Library = () => {
                 r.title.toLowerCase().includes(q) ||
                 (r.category ?? '').toLowerCase().includes(q)),
     );
-
-    if (loading)
-        return <p className="p-8 font-sans text-text-subtle">Loading…</p>;
 
     return (
         <div className="flex w-full flex-col items-center gap-6 px-4 py-8 font-display">
@@ -91,9 +89,12 @@ const Library = () => {
                 </div>
             </div>
             {error && <p className="font-sans text-danger">{error}</p>}
-            {shown.length === 0 && (
+            {!loading && shown.length === 0 && (
                 <p className="font-sans text-text-subtle">No recipes yet.</p>
             )}
+            {loading ? (
+                <CardGridSkeleton />
+            ) : (
             <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {shown.map((r) => (
                     <div
@@ -163,6 +164,7 @@ const Library = () => {
                     </div>
                 ))}
             </div>
+            )}
             <datalist id="food-categories">
                 {FOOD_CATEGORIES.map((c) => (
                     <option key={c} value={c} />
