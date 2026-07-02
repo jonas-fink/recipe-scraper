@@ -1,5 +1,10 @@
 import type { RequestHandler } from 'express';
-import { extractText, parseRecipe, extractCache } from '#services';
+import {
+    extractText,
+    parseRecipe,
+    extractCache,
+    deleteImageByUrl,
+} from '#services';
 import { Recipe } from '#models';
 
 /** POST /api/v1/recipes/extract — scrapen + parsen, NICHT speichern (Preview-Draft). */
@@ -79,6 +84,21 @@ export const update: RequestHandler = async (req, res) => {
     res.json({ data: updated });
 };
 
+/** DELETE /api/v1/recipes/:id — eigenes Rezept löschen. */
+export const remove: RequestHandler = async (req, res) => {
+    const deleted = await Recipe.findOneAndDelete({
+        _id: req.params.id,
+        userId: req.userId,
+    });
+    if (!deleted) {
+        res.status(404).json({ message: 'Recipe not found' });
+        return;
+    }
+    await deleteImageByUrl(deleted.imageUrl); // remove Cloudinary asset if any
+    communityCache = null;
+    res.status(204).end();
+};
+
 /** POST /api/v1/recipes/:id/image — Bild zu Cloudinary hochladen (via fileUploadHandler) und imageUrl setzen. */
 export const uploadImage: RequestHandler = async (req, res) => {
     const { imageUrl } = req.body as { imageUrl?: string };
@@ -98,7 +118,7 @@ export const uploadImage: RequestHandler = async (req, res) => {
     res.json({ data: updated });
 };
 
-// ponytail: single shared response, short TTL — cheaper than per-publish invalidation.
+// single shared response, short TTL — cheaper than per-publish invalidation.
 let communityCache: { data: unknown; expires: number } | null = null;
 const COMMUNITY_TTL_MS = 60 * 1000;
 

@@ -72,6 +72,9 @@ export const listRecipes = () => api.get<Recipe[]>('/recipes');
 export const updateRecipe = (id: string, patch: RecipePatch) =>
     api.patch<Recipe>(`/recipes/${id}`, patch);
 
+export const deleteRecipe = (id: string) =>
+    api.delete<void>(`/recipes/${id}`);
+
 export const listCommunity = () => api.get<Recipe[]>('/recipes/community');
 
 export const uploadRecipeImage = (id: string, file: File) => {

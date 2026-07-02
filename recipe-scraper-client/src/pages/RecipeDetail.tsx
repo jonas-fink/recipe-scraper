@@ -1,17 +1,24 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { RecipePreview } from '../components/RecipePreview';
 import {
     listRecipes,
     updateRecipe,
+    deleteRecipe,
     uploadRecipeImage,
     type Recipe,
 } from '../api/recipes';
-import { RiArrowLeftLine, RiCameraLine, RiImageLine } from 'react-icons/ri';
+import {
+    RiArrowLeftLine,
+    RiCameraLine,
+    RiDeleteBinLine,
+    RiImageLine,
+} from 'react-icons/ri';
 import { PuffLoader } from 'react-spinners';
 
 const RecipeDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -34,6 +41,17 @@ const RecipeDetail = () => {
             setError((e as Error).message);
         } finally {
             setSaving(false);
+        }
+    };
+
+    const remove = async () => {
+        if (!recipe?._id) return;
+        if (!window.confirm('Willst du dieses Rezept löschen?')) return;
+        try {
+            await deleteRecipe(recipe._id);
+            navigate('/library');
+        } catch (e) {
+            setError((e as Error).message);
         }
     };
 
@@ -98,6 +116,13 @@ const RecipeDetail = () => {
                             className="hidden"
                         />
                     </label>
+                    <button
+                        type="button"
+                        onClick={remove}
+                        className="flex cursor-pointer items-center gap-2 rounded-full bg-danger p-2 font-semibold text-bg hover:brightness-110"
+                    >
+                        <RiDeleteBinLine size={32} />
+                    </button>
                 </div>
             </div>
 

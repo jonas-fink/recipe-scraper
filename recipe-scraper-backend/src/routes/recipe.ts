@@ -11,6 +11,7 @@ import {
     create,
     list,
     update,
+    remove,
     community,
     uploadImage,
 } from '#controllers';
@@ -28,6 +29,7 @@ router.post(
 router.post('/', protect, validateBody(saveRecipeSchema), create);
 router.get('/', protect, list);
 router.patch('/:id', protect, validateBody(updateRecipeSchema), update);
+router.delete('/:id', protect, remove);
 router.post(
     '/:id/image',
     protect,
