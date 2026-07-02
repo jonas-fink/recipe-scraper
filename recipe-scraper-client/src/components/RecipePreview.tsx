@@ -31,17 +31,21 @@ export function RecipePreview({
             ),
         });
 
-    const removeIngredient = (i: number) =>
+    const removeIngredient = (i: number) => {
+        if (!window.confirm('Willst du diese Zutat löschen?')) return;
         onChange({
             ...recipe,
             ingredients: recipe.ingredients.filter((_, idx) => idx !== i),
         });
+    };
 
-    const removeStep = (i: number) =>
+    const removeStep = (i: number) => {
+        if (!window.confirm('Willst du diesen Schritt löschen?')) return;
         onChange({
             ...recipe,
             instructions: recipe.instructions.filter((_, idx) => idx !== i),
         });
+    };
 
     return (
         <div className="w-full max-w-5xl rounded-2xl border border-border bg-glass p-4 md:p-6 backdrop-blur-md shadow-card mb-16">
