@@ -8,11 +8,13 @@ import {
     uploadRecipeImage,
     type Recipe,
 } from '../api/recipes';
+import { addToCart } from '../api/cart';
 import {
     RiArrowLeftLine,
     RiCameraLine,
     RiDeleteBinLine,
     RiImageLine,
+    RiShoppingCartLine,
 } from 'react-icons/ri';
 import { PuffLoader } from 'react-spinners';
 
@@ -24,6 +26,7 @@ const RecipeDetail = () => {
     const [error, setError] = useState('');
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [added, setAdded] = useState(false);
 
     useEffect(() => {
         listRecipes()
@@ -50,6 +53,17 @@ const RecipeDetail = () => {
         try {
             await deleteRecipe(recipe._id);
             navigate('/library');
+        } catch (e) {
+            setError((e as Error).message);
+        }
+    };
+
+    const addIngredients = async () => {
+        if (!recipe) return;
+        try {
+            await addToCart(recipe.ingredients);
+            setAdded(true);
+            setTimeout(() => setAdded(false), 2000);
         } catch (e) {
             setError((e as Error).message);
         }
@@ -90,6 +104,15 @@ const RecipeDetail = () => {
                     <RiArrowLeftLine size={24} />
                 </Link>
                 <div className="flex items-center gap-2">
+                    <button
+                        type="button"
+                        onClick={addIngredients}
+                        title="Zutaten zur Einkaufsliste hinzufügen"
+                        className="flex cursor-pointer items-center gap-2 rounded-full bg-gradient-brand p-2 font-semibold text-bg hover:brightness-110"
+                    >
+                        <RiShoppingCartLine size={32} />
+                        {added && <span className="pr-1 text-sm">✓</span>}
+                    </button>
                     <label className="flex cursor-pointer justify-center items-center gap-2 rounded-full bg-gradient-brand p-2 font-semibold text-bg hover:brightness-110">
                         {uploading ? (
                             <PuffLoader size={50} />

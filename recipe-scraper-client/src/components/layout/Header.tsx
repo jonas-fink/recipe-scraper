@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import {
     RiUserCommunityLine,
     RiBookOpenLine,
+    RiShoppingCartLine,
     RiLogoutBoxLine,
 } from 'react-icons/ri';
 
@@ -40,6 +41,10 @@ const Header = () => {
                         <NavLink to="/library" className={navClass}>
                             <RiBookOpenLine size={32} />
                             {/* Library */}
+                        </NavLink>
+                        <NavLink to="/cart" className={navClass}>
+                            <RiShoppingCartLine size={32} />
+                            {/* Cart */}
                         </NavLink>
                         <button
                             onClick={logout}

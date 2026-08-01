@@ -72,7 +72,7 @@ export function ExtractForm({
             </form>
 
             <div className="flex items-center gap-4 md:flex-row flex-col">
-                <p className="text-text-subtle">Works with</p>
+                <p className="text-text-subtle">Funktioniert mit:</p>
                 <div className="flex gap-4">
                     {' '}
                     {socialMedia.map((s) => (

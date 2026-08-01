@@ -8,14 +8,16 @@ const Hero = () => {
             </div>
             <div className="flex flex-col gap-4 items-center justify-center max-w-3xl">
                 <h1 className="text-5xl text-center">
-                    Turn any food video into a recipe you can{' '}
+                    Verwandle jedes Reel in ein Rezept dass du{' '}
                     <span className="bg-linear-to-br from-mint to-azure bg-clip-text text-transparent">
-                        actually cook
+                        wirklich kochen{' '}
                     </span>
+                    kannst
                 </h1>
                 <p className="font-sans text-text-muted font-semibold text-md text-center">
-                    Drop a link from Instagram, Facebook or TikTok. We pull the
-                    ingredients and steps into a clean, saveable card.
+                    Füge einen Link von Insta, Facebook oder TikTok ein. Wir
+                    extrahieren die Zutaten und Kochschritte und transformieren
+                    es in ein speicherbares Rezept.
                 </p>
             </div>
         </div>

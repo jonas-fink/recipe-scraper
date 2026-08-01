@@ -9,6 +9,7 @@ import Library from './pages/Library';
 import RecipeDetail from './pages/RecipeDetail';
 import Community from './pages/Community';
 import CommunityDetail from './pages/CommunityDetail';
+import Cart from './pages/Cart';
 
 const App = () => {
     return (
@@ -27,6 +28,7 @@ const App = () => {
                     <Route element={<ProtectedRoute />}>
                         <Route path="/library" element={<Library />} />
                         <Route path="/library/:id" element={<RecipeDetail />} />
+                        <Route path="/cart" element={<Cart />} />
                     </Route>
                 </Route>
             </Routes>

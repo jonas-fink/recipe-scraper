@@ -2,7 +2,7 @@
 
 Turn a social-media cooking video into a clean, structured, editable recipe you own — and optionally share.
 
-Paste an Instagram/Facebook reel URL → the app pulls the video's caption/description, has an LLM parse it into `{ title, ingredients[], steps[] }`, and hands you an **editable preview**. Nothing is saved until you confirm, so the database never fills with AI guesses. Saved recipes belong to you, can carry a category and image, be favorited, and be published to a public community feed.
+Paste an Instagram/Facebook reel URL → the app pulls the video's caption/description, has an LLM parse it into `{ title, ingredients[], steps[] }`, and hands you an **editable preview**. Nothing is saved until you confirm, so the database never fills with AI guesses. Saved recipes belong to you, can carry a category and image, be favorited, added to a shopping cart with one click, and be published to a public community feed.
 
 ---
 
@@ -56,6 +56,7 @@ Two packages, one repo:
 | `GET`                         | `/recipes/community`        | public (published recipes), cached 60s               |
 | `POST` `GET` `PATCH` `DELETE` | `/recipes` · `/recipes/:id` | `protect`, scoped to `userId`                        |
 | `POST`                        | `/recipes/:id/image`        | `protect` → formidable → Cloudinary                  |
+| `GET` `POST` `PUT`            | `/cart`                     | `protect`, scoped to `userId` (add merges quantities) |
 | —                             | `/auth`, `/users`           | login / signup / refresh (rotating), user management |
 
 All responses use a consistent `{ data: … }` / `{ message: … }` envelope.

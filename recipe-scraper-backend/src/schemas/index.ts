@@ -9,3 +9,4 @@ export {
 export type { Recipe, Ingredient } from './recipe.ts';
 export * from './user.ts';
 export * from './auth.ts';
+export { cartSchema } from './cart.ts';

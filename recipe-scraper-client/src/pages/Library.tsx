@@ -95,75 +95,81 @@ const Library = () => {
             {loading ? (
                 <CardGridSkeleton />
             ) : (
-            <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {shown.map((r) => (
-                    <div
-                        key={r._id}
-                        className="flex flex-col overflow-hidden rounded-2xl border border-border bg-glass shadow-card backdrop-blur-md"
-                    >
-                        <Link
-                            to={`/library/${r._id}`}
-                            style={
-                                r.imageUrl
-                                    ? { backgroundImage: `url(${r.imageUrl})` }
-                                    : undefined
-                            }
-                            className={`relative block aspect-video bg-cover bg-center ${
-                                r.imageUrl ? '' : 'bg-gradient-brand'
-                            }`}
+                <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {shown.map((r) => (
+                        <div
+                            key={r._id}
+                            className="flex flex-col overflow-hidden rounded-2xl border border-border bg-glass shadow-card backdrop-blur-md"
                         >
-                            <button
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    patch(r._id!, {
-                                        isFavorite: !r.isFavorite,
-                                    });
-                                }}
-                                title="Toggle favorite"
-                                className="absolute right-2 top-2 text-2xl leading-none drop-shadow-lg cursor-pointer"
+                            <Link
+                                to={`/library/${r._id}`}
+                                style={
+                                    r.imageUrl
+                                        ? {
+                                              backgroundImage: `url(${r.imageUrl})`,
+                                          }
+                                        : undefined
+                                }
+                                className={`relative block aspect-video bg-cover bg-center ${
+                                    r.imageUrl ? '' : 'bg-gradient-brand'
+                                }`}
                             >
-                                {r.isFavorite ? (
-                                    <AiFillStar size={32} />
-                                ) : (
-                                    <AiOutlineStar size={32} />
-                                )}
-                            </button>
-                            <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent p-4">
-                                <h3 className="text-xl font-semibold text-white drop-shadow">
-                                    {r.title}
-                                </h3>
-                            </div>
-                        </Link>
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        patch(r._id!, {
+                                            isFavorite: !r.isFavorite,
+                                        });
+                                    }}
+                                    title="Toggle favorite"
+                                    className="absolute right-2 top-2 text-2xl leading-none drop-shadow-lg cursor-pointer"
+                                >
+                                    {r.isFavorite ? (
+                                        <AiFillStar size={32} />
+                                    ) : (
+                                        <AiOutlineStar size={32} />
+                                    )}
+                                </button>
+                                <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent p-4">
+                                    <h3 className="text-xl font-semibold text-white drop-shadow">
+                                        {r.title}
+                                    </h3>
+                                </div>
+                            </Link>
 
-                        <div className="flex flex-col gap-3 p-4 font-sans  items-start">
-                            <Pill>{r.category ?? ''}</Pill>
-                            {(() => {
-                                const inCommunity =
-                                    !r.isPublished &&
-                                    communityUrls.has(r.sourceUrl);
-                                return (
-                                    <button
-                                        onClick={() =>
-                                            patch(r._id!, {
-                                                isPublished: !r.isPublished,
-                                            })
-                                        }
-                                        disabled={inCommunity}
-                                        className="self-end rounded-full bg-gradient-brand px-5 py-2 font-semibold text-bg cursor-pointer hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-                                    >
-                                        {r.isPublished
-                                            ? 'Unpublish'
-                                            : inCommunity
-                                              ? 'Already in community'
-                                              : 'Publish to community'}
-                                    </button>
-                                );
-                            })()}
+                            <div className="flex gap-3 p-4 font-sans justify-between items-center">
+                                {r.category && (
+                                    <span className="text-sm text-text-subtle self-start">
+                                        {r.category}
+                                    </span>
+                                )}
+                                {(() => {
+                                    const inCommunity =
+                                        !r.isPublished &&
+                                        communityUrls.has(r.sourceUrl);
+                                    return (
+                                        <button
+                                            onClick={() =>
+                                                patch(r._id!, {
+                                                    isPublished: !r.isPublished,
+                                                })
+                                            }
+                                            disabled={inCommunity}
+                                            className="self-end rounded-full bg-gradient-brand px-5 py-2 font-semibold text-bg cursor-pointer hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                                        >
+                                            {r.isPublished
+                                                ? 'Unpublish'
+                                                : inCommunity
+                                                  ? 'Already in community'
+                                                  : 'Publish to community'}
+                                        </button>
+                                    );
+                                })()}
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
             )}
             <datalist id="food-categories">
                 {FOOD_CATEGORIES.map((c) => (
