@@ -71,7 +71,9 @@ const Community = () => {
                             <div
                                 style={
                                     r.imageUrl
-                                        ? { backgroundImage: `url(${r.imageUrl})` }
+                                        ? {
+                                              backgroundImage: `url(${r.imageUrl})`,
+                                          }
                                         : undefined
                                 }
                                 className={`relative block aspect-video bg-cover bg-center ${
