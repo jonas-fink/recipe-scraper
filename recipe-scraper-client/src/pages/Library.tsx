@@ -8,7 +8,6 @@ import {
     type Recipe,
     type RecipePatch,
 } from '../api/recipes';
-import { Pill } from '../components/hero/Pill';
 import FilterButton from '../components/library/FilterButton';
 import SearchBar from '../components/shared/SearchBar';
 import { CardGridSkeleton } from '../components/Skeletons';
