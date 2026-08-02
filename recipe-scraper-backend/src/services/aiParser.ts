@@ -49,29 +49,49 @@ die Information im Text nicht eindeutig genannt wird.
 TEXT:
 `;
 
-let client: GoogleGenAI | null = null;
-const getClient = (): GoogleGenAI => {
-    if (!client) {
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
+// ponytail: Keys komma-getrennt aus einer env-Var; bei Quota (429) nächster Key.
+// Kein Pool-Manager/Round-Robin — reihum-Retry reicht gegen Free-Tier-Limits.
+let clients: GoogleGenAI[] | null = null;
+const getClients = (): GoogleGenAI[] => {
+    if (!clients) {
+        const keys = (process.env.GEMINI_API_KEY ?? '')
+            .split(',')
+            .map((k) => k.trim())
+            .filter(Boolean);
+        if (keys.length === 0) {
             throw new Error('GEMINI_API_KEY fehlt', { cause: { status: 500 } });
         }
-        client = new GoogleGenAI({ apiKey });
+        clients = keys.map((apiKey) => new GoogleGenAI({ apiKey }));
     }
-    return client;
+    return clients;
+};
+
+const isQuotaError = (err: unknown): boolean => {
+    const s = String(err);
+    return s.includes('429') || s.includes('RESOURCE_EXHAUSTED');
 };
 
 export const parseRecipe = async (text: string): Promise<Recipe> => {
     let raw: string | undefined;
-    try {
-        const res = await getClient().models.generateContent({
-            model: MODEL,
-            contents: PROMPT + text,
-            config: { responseMimeType: 'application/json', responseSchema },
-        });
-        raw = res.text;
-    } catch (err) {
-        throw new Error(`KI-Parsing fehlgeschlagen: ${String(err)}`, {
+    let lastErr: unknown;
+    for (const client of getClients()) {
+        try {
+            const res = await client.models.generateContent({
+                model: MODEL,
+                contents: PROMPT + text,
+                config: { responseMimeType: 'application/json', responseSchema },
+            });
+            raw = res.text;
+            break;
+        } catch (err) {
+            lastErr = err;
+            if (isQuotaError(err)) continue; // nächster Key
+            break; // echter Fehler -> nicht weiter probieren
+        }
+    }
+
+    if (raw === undefined && lastErr !== undefined) {
+        throw new Error(`KI-Parsing fehlgeschlagen: ${String(lastErr)}`, {
             cause: { status: 502 },
         });
     }
