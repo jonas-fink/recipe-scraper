@@ -77,7 +77,7 @@ const Community = () => {
                                         : undefined
                                 }
                                 className={`relative block aspect-video bg-cover bg-center ${
-                                    r.imageUrl ? '' : 'bg-gradient-brand'
+                                    r.imageUrl ? '' : 'bg-elevated'
                                 }`}
                             >
                                 <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent p-4">

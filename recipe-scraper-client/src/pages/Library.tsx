@@ -110,7 +110,7 @@ const Library = () => {
                                         : undefined
                                 }
                                 className={`relative block aspect-video bg-cover bg-center ${
-                                    r.imageUrl ? '' : 'bg-gradient-brand'
+                                    r.imageUrl ? '' : 'bg-elevated'
                                 }`}
                             >
                                 <button

@@ -48,6 +48,14 @@ export type RecipePatch = Partial<
     >
 >;
 
+// Drop blank ingredient/step rows the user added but left empty — the backend
+// Zod schema rejects empty ingredient names and empty instruction strings.
+export const stripBlankRows = (recipe: Recipe): Recipe => ({
+    ...recipe,
+    ingredients: recipe.ingredients.filter((i) => i.name.trim() !== ''),
+    instructions: recipe.instructions.filter((s) => s.trim() !== ''),
+});
+
 export const extractRecipe = (url: string) =>
     api.post<Recipe>('/recipes/extract', { url });
 

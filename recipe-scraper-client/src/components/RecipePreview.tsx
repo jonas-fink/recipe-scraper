@@ -47,6 +47,18 @@ export function RecipePreview({
         });
     };
 
+    const addIngredient = () =>
+        onChange({
+            ...recipe,
+            ingredients: [
+                ...recipe.ingredients,
+                { name: '', amount: null, unit: null },
+            ],
+        });
+
+    const addStep = () =>
+        onChange({ ...recipe, instructions: [...recipe.instructions, ''] });
+
     return (
         <div className="w-full max-w-5xl rounded-2xl border border-border bg-glass p-4 md:p-6 backdrop-blur-md shadow-card mb-16">
             <input
@@ -58,12 +70,22 @@ export function RecipePreview({
                 <div className="flex gap-2 items-center">
                     {' '}
                     <AiOutlineClockCircle className="text-mint" />
-                    <p className="text-text-muted">
-                        Total{' '}
-                        <span className="text-white">
-                            {recipe.cookTimeMinutes ?? ''} min
-                        </span>
-                    </p>
+                    <input
+                        value={recipe.cookTimeMinutes ?? ''}
+                        type="number"
+                        placeholder="Min"
+                        onChange={(e) =>
+                            onChange({
+                                ...recipe,
+                                cookTimeMinutes:
+                                    e.target.value === ''
+                                        ? null
+                                        : Number(e.target.value),
+                            })
+                        }
+                        className={`${field} w-20`}
+                    />
+                    <span className="text-text-muted">min</span>
                 </div>
                 <div className="flex gap-2 items-center">
                     {' '}
@@ -158,12 +180,19 @@ export function RecipePreview({
                             </button>
                         </div>
                     ))}
+                    <button
+                        type="button"
+                        onClick={addIngredient}
+                        className="self-end rounded-sm border border-border px-2 text-xl text-text-muted hover:border-border-strong hover:text-text cursor-pointer"
+                    >
+                        +
+                    </button>
                 </div>
                 <div className="flex flex-col gap-2">
                     <h3 className="mb-2 font-semibold text-text-muted">
                         SCHRITTE
                     </h3>
-                    <ol className="mb-6 flex flex-col gap-2">
+                    <ol className="mb-2 flex flex-col gap-2">
                         {recipe.instructions.map((step, i) => (
                             <li key={i} className="flex gap-2">
                                 <span className="pt-2 text-text-subtle w-8">
@@ -186,6 +215,13 @@ export function RecipePreview({
                             </li>
                         ))}
                     </ol>
+                    <button
+                        type="button"
+                        onClick={addStep}
+                        className="self-end rounded-sm border border-border px-2 mb-4 text-xl text-text-muted hover:border-border-strong hover:text-text cursor-pointer"
+                    >
+                        +
+                    </button>
                 </div>
             </div>
 

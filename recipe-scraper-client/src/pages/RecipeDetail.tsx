@@ -6,6 +6,7 @@ import {
     updateRecipe,
     deleteRecipe,
     uploadRecipeImage,
+    stripBlankRows,
     type Recipe,
 } from '../api/recipes';
 import { addToCart } from '../api/cart';
@@ -40,7 +41,7 @@ const RecipeDetail = () => {
         if (!recipe?._id) return;
         setSaving(true);
         try {
-            setRecipe(await updateRecipe(recipe._id, recipe));
+            setRecipe(await updateRecipe(recipe._id, stripBlankRows(recipe)));
             setEditing(false);
         } catch (e) {
             setError((e as Error).message);

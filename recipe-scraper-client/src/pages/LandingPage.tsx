@@ -3,7 +3,12 @@ import { useNavigate } from 'react-router';
 import Hero from '../components/Hero';
 import { ExtractForm } from '../components/ExtractForm';
 import { RecipePreview } from '../components/RecipePreview';
-import { extractRecipe, saveRecipe, type Recipe } from '../api/recipes';
+import {
+    extractRecipe,
+    saveRecipe,
+    stripBlankRows,
+    type Recipe,
+} from '../api/recipes';
 import { useAuth } from '../context/AuthContext';
 
 const LandingPage = () => {
@@ -38,7 +43,7 @@ const LandingPage = () => {
         setSaving(true);
         setError('');
         try {
-            await saveRecipe(recipe);
+            await saveRecipe(stripBlankRows(recipe));
             setSaved(true);
             setRecipe(null);
         } catch (e) {
