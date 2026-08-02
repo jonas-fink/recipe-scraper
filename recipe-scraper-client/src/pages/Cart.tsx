@@ -40,7 +40,11 @@ const Cart = () => {
         if (!name) return;
         save([
             ...items,
-            { name, amount: amount ? Number(amount) : null, unit: unit || null },
+            {
+                name,
+                amount: amount ? Number(amount) : null,
+                unit: unit || null,
+            },
         ]);
         form.reset();
         closeModal();

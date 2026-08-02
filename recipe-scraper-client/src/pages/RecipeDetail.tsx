@@ -27,6 +27,7 @@ const RecipeDetail = () => {
     const [saving, setSaving] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [added, setAdded] = useState(false);
+    const [editing, setEditing] = useState(false);
 
     useEffect(() => {
         listRecipes()
@@ -40,6 +41,7 @@ const RecipeDetail = () => {
         setSaving(true);
         try {
             setRecipe(await updateRecipe(recipe._id, recipe));
+            setEditing(false);
         } catch (e) {
             setError((e as Error).message);
         } finally {
@@ -139,13 +141,15 @@ const RecipeDetail = () => {
                             className="hidden"
                         />
                     </label>
-                    <button
-                        type="button"
-                        onClick={remove}
-                        className="flex cursor-pointer items-center gap-2 rounded-full bg-danger p-2 font-semibold text-bg hover:brightness-110"
-                    >
-                        <RiDeleteBinLine size={32} />
-                    </button>
+                    {editing && (
+                        <button
+                            type="button"
+                            onClick={remove}
+                            className="flex cursor-pointer items-center gap-2 rounded-full bg-danger p-2 font-semibold text-bg hover:brightness-110"
+                        >
+                            <RiDeleteBinLine size={32} />
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -165,12 +169,62 @@ const RecipeDetail = () => {
                 )}
             </div>
 
-            <RecipePreview
-                recipe={recipe}
-                saving={saving}
-                onChange={setRecipe}
-                onSave={save}
-            />
+            {editing ? (
+                <RecipePreview
+                    recipe={recipe}
+                    saving={saving}
+                    onChange={setRecipe}
+                    onSave={save}
+                />
+            ) : (
+                <div className="w-full max-w-5xl rounded-2xl border border-border bg-glass p-6 shadow-card backdrop-blur-md">
+                    <h1 className="text-2xl font-semibold text-text">
+                        {recipe.title}
+                    </h1>
+
+                    <div className="mt-2 flex flex-wrap gap-4 font-sans text-sm text-text-subtle">
+                        {recipe.category && <span>{recipe.category}</span>}
+                        {recipe.cookTimeMinutes != null && (
+                            <span>{recipe.cookTimeMinutes} min</span>
+                        )}
+                        {recipe.servings != null && (
+                            <span>{recipe.servings} servings</span>
+                        )}
+                    </div>
+
+                    <h2 className="mt-6 text-lg font-semibold text-text">
+                        Zutaten
+                    </h2>
+                    <ul className="mt-2 list-disc pl-5 font-sans text-text">
+                        {recipe.ingredients.map((ing, i) => (
+                            <li key={i}>
+                                {[ing.amount, ing.unit, ing.name]
+                                    .filter((x) => x != null && x !== '')
+                                    .join(' ')}
+                            </li>
+                        ))}
+                    </ul>
+
+                    <h2 className="mt-6 text-lg font-semibold text-text">
+                        Zubereitung
+                    </h2>
+                    <ol className="mt-2 list-decimal space-y-2 pl-5 font-sans text-text">
+                        {recipe.instructions.map((step, i) => (
+                            <li key={i}>{step}</li>
+                        ))}
+                    </ol>
+
+                    <div className="mt-6 flex justify-center">
+                        <button
+                            type="button"
+                            onClick={() => setEditing(true)}
+                            className="rounded-full bg-gradient-brand px-6 py-3 font-semibold text-bg hover:brightness-110 cursor-pointer"
+                        >
+                            Bearbeiten
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
