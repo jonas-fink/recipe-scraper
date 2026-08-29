@@ -10,6 +10,7 @@ import RecipeDetail from './pages/RecipeDetail';
 import Community from './pages/Community';
 import CommunityDetail from './pages/CommunityDetail';
 import Cart from './pages/Cart';
+import { Impressum, Datenschutz, Kontakt } from './pages/Legal';
 
 const App = () => {
     return (
@@ -21,6 +22,9 @@ const App = () => {
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/signup" element={<SignupPage />} />
                     <Route path="/community" element={<Community />} />
+                    <Route path="/impressum" element={<Impressum />} />
+                    <Route path="/datenschutz" element={<Datenschutz />} />
+                    <Route path="/kontakt" element={<Kontakt />} />
                     <Route
                         path="/community/:id"
                         element={<CommunityDetail />}

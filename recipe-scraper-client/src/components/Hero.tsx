@@ -15,9 +15,9 @@ const Hero = () => {
                     kannst
                 </h1>
                 <p className="font-sans text-text-muted font-semibold text-md text-center">
-                    Füge einen Link von Insta, Facebook oder TikTok ein. Wir
-                    extrahieren die Zutaten und Kochschritte und transformieren
-                    es in ein speicherbares Rezept.
+                    Füge einen Link von Insta, Facebook, TikTok oder z.B.
+                    Chefkoch ein. Wir extrahieren die Zutaten und Kochschritte
+                    und transformieren es in ein speicherbares Rezept.
                 </p>
             </div>
         </div>
