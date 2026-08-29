@@ -3,6 +3,7 @@ import { SocialPill } from './SocialPill';
 import { ScaleLoader } from 'react-spinners';
 import {
     AiOutlineFacebook,
+    AiOutlineGlobal,
     AiOutlineInstagram,
     AiOutlineTikTok,
 } from 'react-icons/ai';
@@ -22,6 +23,10 @@ const socialMedia = [
         name: 'TikTok',
         bgColor: 'bg-warning',
         icon: <AiOutlineTikTok size={32} />,
+    },
+    {
+        name: 'Web',
+        icon: <AiOutlineGlobal size={32} />,
     },
 ];
 

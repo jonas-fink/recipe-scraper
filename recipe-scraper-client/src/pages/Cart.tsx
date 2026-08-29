@@ -2,9 +2,20 @@ import { useEffect, useState, useRef } from 'react';
 import { getCart, setCart } from '../api/cart';
 import type { Ingredient } from '../api/recipes';
 import { RiCloseLine, RiShoppingCartLine, RiAddFill } from 'react-icons/ri';
-
-const label = (i: Ingredient) =>
-    [i.amount, i.unit, i.name].filter((x) => x != null && x !== '').join(' ');
+import SortableItem from '../components/SortableItem';
+import {
+    DndContext,
+    closestCenter,
+    PointerSensor,
+    useSensor,
+    useSensors,
+    type DragEndEvent,
+} from '@dnd-kit/core';
+import {
+    arrayMove,
+    SortableContext,
+    verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 
 const Cart = () => {
     const [items, setItems] = useState<Ingredient[]>([]);
@@ -19,9 +30,27 @@ const Cart = () => {
             .finally(() => setLoading(false));
     }, []);
 
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 5,
+            },
+        }),
+    );
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        if (over && active.id !== over.id) {
+            const oldIndex = items.findIndex((item) => item.name === active.id);
+            const newIndex = items.findIndex((item) => item.name === over.id);
+            save(arrayMove(items, oldIndex, newIndex));
+        }
+    };
+
     const save = async (next: Ingredient[]) => {
         const prev = items;
-        setItems(next); // optimistic
+        setItems(next);
         try {
             setItems(await setCart(next));
         } catch (e) {
@@ -30,7 +59,7 @@ const Cart = () => {
         }
     };
 
-    const addItem = (e: React.FormEvent<HTMLFormElement>) => {
+    const addItem = (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.currentTarget;
         const data = new FormData(form);
@@ -153,33 +182,47 @@ const Cart = () => {
 
             {error && <p className="font-sans text-danger">{error}</p>}
 
-            <div className="w-full max-w-2xl rounded-2xl border border-border bg-glass p-6 shadow-card backdrop-blur-md">
-                {items.length === 0 ? (
-                    <p className="font-sans text-text-subtle">
-                        Dein Einkaufskorb ist leer.
-                    </p>
-                ) : (
-                    <ul className="flex flex-col divide-y divide-border font-sans text-text">
-                        {items.map((ing, i) => (
-                            <li
-                                key={i}
-                                className="flex items-center justify-between py-2"
-                            >
-                                <span>{label(ing)}</span>
-                                <button
-                                    onClick={() =>
-                                        save(items.filter((_, j) => j !== i))
-                                    }
-                                    aria-label="Entfernen"
-                                    className="cursor-pointer rounded-full p-1 text-text-muted hover:text-danger"
-                                >
-                                    <RiCloseLine size={20} />
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                )}
-            </div>
+            <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+            >
+                <SortableContext
+                    items={items.map((i) => i.name)}
+                    strategy={verticalListSortingStrategy}
+                >
+                    <div className="w-full max-w-2xl rounded-2xl border border-border bg-glass p-6 shadow-card backdrop-blur-md">
+                        {items.length === 0 ? (
+                            <p className="font-sans text-text-subtle">
+                                Dein Einkaufskorb ist leer.
+                            </p>
+                        ) : (
+                            <ul className="flex flex-col gap-1 font-sans text-text">
+                                {items.map((ing, i) => (
+                                    <SortableItem
+                                        key={ing.name}
+                                        name={ing.name}
+                                        amount={ing.amount}
+                                        unit={ing.unit}
+                                        onRemove={() => {
+                                            if (
+                                                !window.confirm(
+                                                    'Willst du dieses Rezept löschen?',
+                                                )
+                                            )
+                                                return;
+                                            const updated = items.filter(
+                                                (_, j) => j !== i,
+                                            );
+                                            save(updated);
+                                        }}
+                                    />
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </SortableContext>
+            </DndContext>
         </div>
     );
 };
