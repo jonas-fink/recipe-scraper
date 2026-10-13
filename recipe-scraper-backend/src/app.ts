@@ -2,7 +2,13 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { errorHandler, globalRateLimiter } from '#middlewares';
-import { recipeRouter, userRouter, authRouter, cartRouter } from '#routes';
+import {
+    recipeRouter,
+    userRouter,
+    authRouter,
+    cartRouter,
+    mealPlanRouter,
+} from '#routes';
 
 const app = express();
 
@@ -17,6 +23,7 @@ app.use('/api/v1/user', userRouter);
 
 app.use('/api/v1/recipes', recipeRouter);
 app.use('/api/v1/cart', cartRouter);
+app.use('/api/v1/mealplan', mealPlanRouter);
 
 // errorHandler muss NACH allen Routen stehen, sonst fängt er nichts.
 app.use('*splat', (req, res) => res.status(404).json({ message: 'Not Found' }));

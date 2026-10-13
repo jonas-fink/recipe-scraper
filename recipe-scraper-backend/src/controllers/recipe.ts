@@ -5,7 +5,7 @@ import {
     extractCache,
     deleteImageByUrl,
 } from '#services';
-import { Recipe } from '#models';
+import { Recipe, MealPlan } from '#models';
 
 /** POST /api/v1/recipes/extract — scrapen + parsen, NICHT speichern (Preview-Draft). */
 export const extract: RequestHandler = async (req, res) => {
@@ -95,6 +95,7 @@ export const remove: RequestHandler = async (req, res) => {
         return;
     }
     await deleteImageByUrl(deleted.imageUrl); // remove Cloudinary asset if any
+    await MealPlan.deleteMany({ recipeId: deleted._id }); // Wochenplan-Einträge mitlöschen
     communityCache = null;
     res.status(204).end();
 };

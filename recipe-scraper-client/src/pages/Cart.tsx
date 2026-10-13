@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
 import { getCart, setCart } from '../api/cart';
 import type { Ingredient } from '../api/recipes';
-import { RiCloseLine, RiShoppingCartLine, RiAddFill } from 'react-icons/ri';
+import { Plus, X } from 'lucide-react';
 import SortableItem from '../components/SortableItem';
+import { AISLES, AISLE_ORDER, aisleOf } from '../utils/aisles';
 import {
     DndContext,
     closestCenter,
@@ -22,6 +23,22 @@ const Cart = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const modalRef = useRef<HTMLDialogElement>(null);
+    const [grouped, setGrouped] = useState(() => {
+        try {
+            return localStorage.getItem('cartGrouped') === '1';
+        } catch {
+            return false;
+        }
+    });
+
+    const toggleGrouped = () => {
+        setGrouped(!grouped);
+        try {
+            localStorage.setItem('cartGrouped', grouped ? '0' : '1');
+        } catch {
+            /* ignore: nur Komfort */
+        }
+    };
 
     useEffect(() => {
         getCart()
@@ -87,100 +104,92 @@ const Cart = () => {
         modalRef.current?.close();
     };
 
-    if (loading)
-        return <p className="p-8 font-sans text-text-subtle">Loading…</p>;
+    const renderItem = (ing: Ingredient) => (
+        <SortableItem
+            key={ing.name}
+            {...ing}
+            onAisleChange={
+                grouped
+                    ? (aisle) =>
+                          save(
+                              items.map((it) =>
+                                  it === ing ? { ...it, aisle } : it,
+                              ),
+                          )
+                    : undefined
+            }
+            onRemove={() => {
+                if (!window.confirm('Willst du diese Zutat löschen?')) return;
+                save(items.filter((it) => it !== ing));
+            }}
+        />
+    );
+
+    if (loading) return <p className="p-8 text-text-muted">Lädt…</p>;
+
+    const field =
+        'h-12 rounded-md border border-border-strong bg-bg px-3 text-text outline-none placeholder:text-text-subtle focus:border-primary';
+    const segment = (active: boolean) =>
+        `h-9 cursor-pointer rounded-sm text-sm ${
+            active ? 'bg-border font-medium text-text' : 'text-text-muted hover:text-text'
+        }`;
 
     return (
-        <div className="flex w-full flex-col items-center gap-6 px-4 py-8">
-            <div className="flex w-full max-w-2xl items-center justify-between font-sans">
-                <h1 className="flex items-center gap-2 font-display text-2xl font-bold text-text">
-                    <RiShoppingCartLine size={28} /> Einkaufsliste
+        <div className="flex w-full max-w-2xl flex-col gap-4 px-5 py-6">
+            <div className="flex items-center gap-2">
+                <h1 className="flex-1 text-3xl font-bold tracking-tight">
+                    Einkaufsliste
                 </h1>
-                <div className="flex justify-center items-center gap-4">
+                {items.length > 0 && (
                     <button
-                        className="rounded-full flex cursor-pointer items-center bg-gradient-brand p-1 font-semibold text-bg hover:brightness-110"
-                        onClick={openModal}
-                    >
-                        <RiAddFill size={32} />
-                    </button>
-
-                    <dialog
-                        ref={modalRef}
-                        onClick={(e) => {
-                            if (e.target === modalRef.current) {
-                                closeModal();
-                            }
+                        onClick={() => {
+                            if (window.confirm('Ganze Einkaufsliste löschen?'))
+                                save([]);
                         }}
-                        className="m-auto hidden w-[90%] max-w-md rounded-2xl border border-border bg-elevated p-6 font-sans text-text
-                        shadow-card open:block backdrop:bg-black/70 backdrop:backdrop-blur-sm"
+                        className="h-11 cursor-pointer rounded-md px-3 text-sm text-text-muted hover:text-danger"
                     >
-                        <form
-                            onSubmit={addItem}
-                            className="flex flex-col gap-4"
-                        >
-                            <div className="flex items-center justify-between">
-                                <h2 className="font-display text-xl font-bold text-text">
-                                    Zutat hinzufügen
-                                </h2>
-                                <button
-                                    type="button"
-                                    onClick={closeModal}
-                                    aria-label="Schließen"
-                                    className="cursor-pointer rounded-full p-1 text-text-muted hover:text-text"
-                                >
-                                    <RiCloseLine size={22} />
-                                </button>
-                            </div>
-
-                            <input
-                                name="name"
-                                type="text"
-                                placeholder="Zutat"
-                                required
-                                autoFocus
-                                className="rounded-md border border-border bg-glass px-4 py-3 font-mono text-text
-                                placeholder:text-text-subtle outline-none focus:border-border-strong"
-                            />
-                            <div className="flex gap-3">
-                                <input
-                                    name="amount"
-                                    type="number"
-                                    step="any"
-                                    min="0"
-                                    placeholder="Menge"
-                                    className="w-1/2 rounded-md border border-border bg-glass px-4 py-3 font-mono text-text
-                                    placeholder:text-text-subtle outline-none focus:border-border-strong"
-                                />
-                                <input
-                                    name="unit"
-                                    type="text"
-                                    placeholder="Einheit"
-                                    className="w-1/2 rounded-md border border-border bg-glass px-4 py-3 font-mono text-text
-                                    placeholder:text-text-subtle outline-none focus:border-border-strong"
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="mt-2 cursor-pointer rounded-md bg-gradient-brand px-6 py-3 font-semibold text-bg hover:brightness-110"
-                            >
-                                Hinzufügen
-                            </button>
-                        </form>
-                    </dialog>
-
-                    {items.length > 0 && (
-                        <button
-                            onClick={() => save([])}
-                            className="rounded-full bg-danger px-4 py-2 font-semibold text-bg hover:brightness-110 cursor-pointer"
-                        >
-                            Alles löschen
-                        </button>
-                    )}
-                </div>
+                        Alles löschen
+                    </button>
+                )}
+                <button
+                    onClick={openModal}
+                    aria-label="Zutat hinzufügen"
+                    className="flex size-11 cursor-pointer items-center justify-center rounded-md bg-primary text-bg hover:bg-primary-soft"
+                >
+                    <Plus size={20} aria-hidden />
+                </button>
             </div>
 
-            {error && <p className="font-sans text-danger">{error}</p>}
+            {items.length > 0 && (
+                <div
+                    role="radiogroup"
+                    aria-label="Sortierung"
+                    className="grid grid-cols-2 rounded-md border border-border bg-surface p-[3px]"
+                >
+                    <button
+                        role="radio"
+                        aria-checked={!grouped}
+                        onClick={() => grouped && toggleGrouped()}
+                        className={segment(!grouped)}
+                    >
+                        Eigene Reihenfolge
+                    </button>
+                    <button
+                        role="radio"
+                        aria-checked={grouped}
+                        onClick={() => !grouped && toggleGrouped()}
+                        className={segment(grouped)}
+                    >
+                        Nach Kategorie
+                    </button>
+                </div>
+            )}
+
+            {error && (
+                <p role="alert" className="text-danger">
+                    {error}
+                </p>
+            )}
 
             <DndContext
                 sensors={sensors}
@@ -191,38 +200,87 @@ const Cart = () => {
                     items={items.map((i) => i.name)}
                     strategy={verticalListSortingStrategy}
                 >
-                    <div className="w-full max-w-2xl rounded-2xl border border-border bg-glass p-6 shadow-card backdrop-blur-md">
-                        {items.length === 0 ? (
-                            <p className="font-sans text-text-subtle">
-                                Dein Einkaufskorb ist leer.
-                            </p>
-                        ) : (
-                            <ul className="flex flex-col gap-1 font-sans text-text">
-                                {items.map((ing, i) => (
-                                    <SortableItem
-                                        key={ing.name}
-                                        name={ing.name}
-                                        amount={ing.amount}
-                                        unit={ing.unit}
-                                        onRemove={() => {
-                                            if (
-                                                !window.confirm(
-                                                    'Willst du dieses Rezept löschen?',
-                                                )
-                                            )
-                                                return;
-                                            const updated = items.filter(
-                                                (_, j) => j !== i,
-                                            );
-                                            save(updated);
-                                        }}
-                                    />
-                                ))}
-                            </ul>
-                        )}
-                    </div>
+                    {items.length === 0 ? (
+                        <p className="text-text-muted">
+                            Deine Einkaufsliste ist leer.
+                        </p>
+                    ) : grouped ? (
+                        AISLE_ORDER.map((id) => {
+                            const group = items.filter(
+                                (ing) => aisleOf(ing) === id,
+                            );
+                            if (group.length === 0) return null;
+                            return (
+                                <section key={id}>
+                                    <h2 className="label-mono mb-1">
+                                        {AISLES.find((a) => a.id === id)?.label}
+                                    </h2>
+                                    <ul className="flex flex-col">
+                                        {group.map(renderItem)}
+                                    </ul>
+                                </section>
+                            );
+                        })
+                    ) : (
+                        <ul className="flex flex-col">{items.map(renderItem)}</ul>
+                    )}
                 </SortableContext>
             </DndContext>
+
+            <dialog
+                ref={modalRef}
+                onClick={(e) => {
+                    if (e.target === modalRef.current) closeModal();
+                }}
+                className="m-auto hidden w-[90%] max-w-md rounded-xl border border-border-strong bg-surface p-5 text-text open:block backdrop:bg-black/70"
+            >
+                <form onSubmit={addItem} className="flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-bold">Zutat hinzufügen</h2>
+                        <button
+                            type="button"
+                            onClick={closeModal}
+                            aria-label="Schließen"
+                            className="flex size-11 cursor-pointer items-center justify-center rounded-md text-text-muted hover:text-text"
+                        >
+                            <X size={20} strokeWidth={1.5} aria-hidden />
+                        </button>
+                    </div>
+                    <input
+                        name="name"
+                        type="text"
+                        placeholder="Zutat"
+                        aria-label="Zutat"
+                        required
+                        autoFocus
+                        className={field}
+                    />
+                    <div className="flex gap-2">
+                        <input
+                            name="amount"
+                            type="number"
+                            step="any"
+                            min="0"
+                            placeholder="Menge"
+                            aria-label="Menge"
+                            className={`${field} w-1/2 min-w-0 font-mono`}
+                        />
+                        <input
+                            name="unit"
+                            type="text"
+                            placeholder="Einheit"
+                            aria-label="Einheit"
+                            className={`${field} w-1/2 min-w-0 font-mono`}
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        className="mt-1 h-12 cursor-pointer rounded-md bg-primary font-bold text-bg hover:bg-primary-soft"
+                    >
+                        Hinzufügen
+                    </button>
+                </form>
+            </dialog>
         </div>
     );
 };

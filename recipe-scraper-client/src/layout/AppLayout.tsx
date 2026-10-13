@@ -1,14 +1,22 @@
 import { Link, Outlet } from 'react-router';
 import Header from '../components/layout/Header';
+import { useAuth } from '../context/AuthContext';
 
 const AppLayout = () => {
+    const { user, logout } = useAuth();
+
     return (
-        <div className="flex flex-col min-h-screen font-sans antialiased">
+        <div className="flex min-h-screen flex-col">
             <Header />
-            <div className="flex flex-col gap-8 justify-center items-center pt-24">
+            <main className="flex flex-1 flex-col items-center">
                 <Outlet />
-            </div>
-            <footer className="mt-auto flex w-full justify-center gap-6 p-6 text-sm text-text-muted font-sans">
+            </main>
+            {/* Mobil Platz für das Dock lassen */}
+            <footer
+                className={`flex w-full flex-wrap justify-center gap-6 p-6 text-sm text-text-muted ${
+                    user ? 'pb-44 md:pb-6' : ''
+                }`}
+            >
                 <Link to="/impressum" className="hover:text-primary">
                     Impressum
                 </Link>
@@ -18,6 +26,14 @@ const AppLayout = () => {
                 <Link to="/kontakt" className="hover:text-primary">
                     Kontakt
                 </Link>
+                {user && (
+                    <button
+                        onClick={logout}
+                        className="cursor-pointer hover:text-danger md:hidden"
+                    >
+                        Abmelden
+                    </button>
+                )}
             </footer>
         </div>
     );

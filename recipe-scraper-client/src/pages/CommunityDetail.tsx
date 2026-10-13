@@ -7,7 +7,8 @@ import {
     type Recipe,
 } from '../api/recipes';
 import { useAuth } from '../context/AuthContext';
-import { RiArrowLeftLine } from 'react-icons/ri';
+import { ArrowLeft, Check, Globe, Plus } from 'lucide-react';
+import RecipeView from '../components/RecipeView';
 
 const authorName = (userId: Recipe['userId']): string =>
     typeof userId === 'object' && userId?.name ? userId.name : 'Anonymous';
@@ -60,105 +61,82 @@ const CommunityDetail = () => {
         }
     };
 
-    if (loading)
-        return <p className="p-8 font-sans text-text-subtle">Loading…</p>;
+    if (loading) return <p className="p-8 text-text-muted">Lädt…</p>;
     if (!recipe)
         return (
-            <div className="p-8 font-sans text-text-subtle">
-                <p>Recipe not found.</p>
-                <Link to="/community" className="text-mint underline">
-                    ← Back to community
+            <div className="flex flex-col gap-2 p-8 text-text-muted">
+                <p>Rezept nicht gefunden.</p>
+                <Link to="/community" className="text-primary underline">
+                    ← Zurück zur Community
                 </Link>
             </div>
         );
 
+    const done = saved || alreadyInLibrary;
+    const iconButton =
+        'flex size-11 items-center justify-center rounded-md border border-border bg-surface text-text hover:border-border-strong';
+
     return (
-        <div className="flex w-full flex-col items-center gap-6 px-4 py-8">
-            <div className="flex w-full max-w-5xl items-center justify-between font-sans">
+        <div className="flex w-full max-w-5xl flex-col gap-5 px-5 py-5">
+            <div className="flex items-center justify-between gap-2">
                 <Link
                     to="/community"
-                    className="text-text-muted hover:text-primary"
+                    aria-label="Zurück zur Community"
+                    className={iconButton}
                 >
-                    <RiArrowLeftLine size={24} />
+                    <ArrowLeft size={20} strokeWidth={1.5} aria-hidden />
                 </Link>
-                <button
-                    onClick={add}
-                    disabled={saving || saved || alreadyInLibrary}
-                    className="rounded-full bg-gradient-brand px-5 py-2 font-semibold text-bg hover:brightness-110 disabled:opacity-60"
-                >
-                    {saved || alreadyInLibrary
-                        ? saved
-                            ? 'Saved'
-                            : 'Already in your library'
-                        : saving
-                          ? 'Saving…'
-                          : user
-                            ? 'Add to my library'
-                            : 'Log in to save'}
-                </button>
-            </div>
-
-            {error && <p className="font-sans text-danger">{error}</p>}
-            {saved && (
-                <p className="font-sans text-mint">Saved to your library ✓</p>
-            )}
-
-            <div className="w-full max-w-5xl">
-                {recipe.imageUrl ? (
-                    <img
-                        src={recipe.imageUrl}
-                        alt={recipe.title}
-                        className="max-h-72 w-full rounded-2xl object-cover shadow-card"
-                    />
-                ) : (
-                    <div className="flex h-48 w-full items-center justify-center rounded-2xl bg-gradient-brand font-sans text-bg">
-                        Noch kein Bild
-                    </div>
+                {recipe.sourceUrl && (
+                    <a
+                        href={recipe.sourceUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex h-11 items-center gap-1.5 rounded-md border border-border bg-surface px-3 font-mono text-xs text-text hover:border-border-strong"
+                    >
+                        <Globe size={16} strokeWidth={1.5} aria-hidden />
+                        Original
+                    </a>
                 )}
             </div>
 
-            <div className="w-full max-w-5xl rounded-2xl border border-border bg-glass p-6 shadow-card backdrop-blur-md">
-                <div className="flex items-baseline justify-between gap-4">
-                    <h1 className="text-2xl font-semibold text-text">
-                        {recipe.title}
-                    </h1>
-                    <span className="font-sans text-sm text-text-subtle">
-                        by {authorName(recipe.userId)}
-                    </span>
-                </div>
+            {recipe.imageUrl ? (
+                <img
+                    src={recipe.imageUrl}
+                    alt=""
+                    className="max-h-80 w-full rounded-lg object-cover"
+                />
+            ) : (
+                <div className="h-40 w-full rounded-lg bg-elevated" />
+            )}
 
-                <div className="mt-2 flex flex-wrap gap-4 font-sans text-sm text-text-subtle">
-                    {recipe.category && <span>{recipe.category}</span>}
-                    {recipe.cookTimeMinutes != null && (
-                        <span>{recipe.cookTimeMinutes} min</span>
-                    )}
-                    {recipe.servings != null && (
-                        <span>{recipe.servings} servings</span>
-                    )}
-                </div>
+            <RecipeView recipe={recipe} byline={`von ${authorName(recipe.userId)}`} />
 
-                <h2 className="mt-6 text-lg font-semibold text-text">
-                    Zutaten
-                </h2>
-                <ul className="mt-2 list-disc pl-5 font-sans text-text">
-                    {recipe.ingredients.map((ing, i) => (
-                        <li key={i}>
-                            {[ing.amount, ing.unit, ing.name]
-                                .filter((x) => x != null && x !== '')
-                                .join(' ')}
-                        </li>
-                    ))}
-                </ul>
+            {error && (
+                <p role="alert" className="text-danger">
+                    {error}
+                </p>
+            )}
 
-                <h2 className="mt-6 text-lg font-semibold text-text">
-                    Zubereitung
-                </h2>
-                <ol className="mt-2 list-decimal space-y-2 pl-5 font-sans text-text">
-                    {recipe.instructions.map((step, i) => (
-                        <li key={i}>{step}</li>
-                    ))}
-                </ol>
-            </div>
+            <button
+                onClick={add}
+                disabled={saving || done}
+                className="flex h-13 cursor-pointer items-center justify-center gap-2 rounded-md bg-primary font-bold text-bg hover:bg-primary-soft disabled:cursor-default disabled:bg-elevated disabled:text-text-muted md:self-start md:px-8"
+            >
+                {done ? (
+                    <Check size={20} aria-hidden />
+                ) : (
+                    <Plus size={20} aria-hidden />
+                )}
+                {saved
+                    ? 'In deiner Bibliothek gespeichert'
+                    : alreadyInLibrary
+                      ? 'Schon in deiner Bibliothek'
+                      : saving
+                        ? 'Speichere…'
+                        : user
+                          ? 'In meine Bibliothek'
+                          : 'Anmelden zum Speichern'}
+            </button>
         </div>
     );
 };

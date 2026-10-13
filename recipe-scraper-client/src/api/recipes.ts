@@ -15,6 +15,7 @@ export interface Ingredient {
     name: string;
     amount: number | null;
     unit: string | null;
+    aisle?: string | null; // nur Warenkorb: manuell gewählter Supermarkt-Bereich
 }
 
 export interface Recipe {

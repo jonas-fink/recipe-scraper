@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router';
 import { signupSchema, type RegisterFormData } from '../schemas/authSchemas';
 import { useAuth } from '../context/AuthContext';
+import AuthField from '../components/shared/AuthField';
 
 const SignupPage = () => {
     const { signup } = useAuth();
@@ -17,119 +18,83 @@ const SignupPage = () => {
 
     const onSubmit = async (data: RegisterFormData) => {
         try {
-            await signup(data);
+            await signup({ ...data, name: data.name || undefined });
             navigate('/');
         } catch {
-            setError('root', { message: 'Could not create account' });
+            setError('root', { message: 'Konto konnte nicht erstellt werden' });
         }
     };
+
     return (
-        <div className="flex flex-col gap-8 w-full max-w-2xl px-4 mt-16">
-            <div className="flex flex-col text-left gap-2">
-                <h1 className="font-display text-5xl text-text">
-                    Create your account
+        <div className="flex w-full max-w-md flex-col gap-8 px-5 pt-16 pb-8">
+            <div className="flex flex-col gap-2">
+                <h1 className="text-4xl font-bold tracking-tight">
+                    Konto erstellen.
                 </h1>
-                <p className="font-sans text-text-muted">Sign up for Reciply</p>
+                <p className="text-text-muted">
+                    Speichere Rezepte, plane deinen Einkauf, teile mit der
+                    Community.
+                </p>
             </div>
-            <div className="bg-surface w-full p-2 rounded-md border border-border-strong hover:shadow-glow">
-                <div className="flex flex-col w-full justify-center items-center">
-                    <form
-                        onSubmit={handleSubmit(onSubmit)}
-                        className="flex flex-col gap-4 w-full p-8"
-                    >
-                        <div className="flex flex-col gap-2">
-                            <label
-                                htmlFor="name"
-                                className="text-md text-text-subtle cursor-pointer hover:text-text"
-                            >
-                                NAME
-                            </label>
-                            <input
-                                type="text"
-                                id="name"
-                                {...register('name')}
-                                placeholder="Jane Doe"
-                                className="border border-border rounded-sm p-4 focus:outline-azure-soft bg-transparent font-mono"
-                            />
-                            {errors.name && (
-                                <p className="text-danger text-xs">
-                                    {errors.name.message}
-                                </p>
-                            )}
-                        </div>
 
-                        <div className="flex flex-col gap-2">
-                            <label
-                                htmlFor="email"
-                                className="text-md text-text-subtle cursor-pointer hover:text-text"
-                            >
-                                EMAIL
-                            </label>
-                            <input
-                                type="email"
-                                id="email"
-                                {...register('email')}
-                                placeholder="you@example.com"
-                                className="border border-border rounded-sm p-4 focus:outline-azure-soft bg-transparent font-mono"
-                                required
-                            />
-                            {errors.email && (
-                                <p className="text-danger text-xs">
-                                    {errors.email.message}
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="flex flex-col gap-2">
-                            <label
-                                htmlFor="password"
-                                className="text-md text-text-subtle cursor-pointer hover:text-text"
-                            >
-                                PASSWORD
-                            </label>
-                            <input
-                                type="password"
-                                id="password"
-                                {...register('password')}
-                                placeholder="**********"
-                                className="border border-border rounded-sm p-4 focus:outline-azure-soft bg-transparent font-mono"
-                                required
-                            />
-                            {errors.password && (
-                                <p className="text-danger text-xs">
-                                    {errors.password.message}
-                                </p>
-                            )}
-                        </div>
-
-                        {errors.root && (
-                            <p className="text-danger text-xs text-center">
-                                {errors.root.message}
-                            </p>
-                        )}
-                        <div className="flex justify-center pt-4">
-                            {' '}
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="rounded-md bg-gradient-brand px-6 py-3 font-semibold text-bg
-                    disabled:opacity-50 shadow-shadow-glow hover:brightness-110 cursor-pointer w-full sm:w-1/4"
-                            >
-                                {isSubmitting ? 'creating...' : 'sign up'}
-                            </button>
-                        </div>
-                    </form>
-                    <p className="text-center text-sm text-text-muted">
-                        Already a member?{' '}
-                        <Link
-                            to="/login"
-                            className="text-azure-soft font-bold hover:underline cursor-pointer text-md"
-                        >
-                            Sign in
-                        </Link>
-                    </p>
+            <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-col gap-4"
+                noValidate
+            >
+                <AuthField
+                    id="name"
+                    label="Name"
+                    type="text"
+                    autoComplete="name"
+                    placeholder="Jane Doe"
+                    registration={register('name')}
+                    error={errors.name?.message}
+                />
+                <AuthField
+                    id="email"
+                    label="E-Mail"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="you@example.com"
+                    registration={register('email')}
+                    error={errors.email?.message}
+                />
+                <div className="flex flex-col gap-1.5">
+                    <AuthField
+                        id="password"
+                        label="Passwort"
+                        type="password"
+                        autoComplete="new-password"
+                        registration={register('password')}
+                        error={errors.password?.message}
+                    />
+                    {!errors.password && (
+                        <p className="font-mono text-xs text-text-muted">
+                            Mindestens 8 Zeichen
+                        </p>
+                    )}
                 </div>
-            </div>
+                {errors.root && (
+                    <p role="alert" className="font-mono text-xs text-danger">
+                        {errors.root.message}
+                    </p>
+                )}
+                <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="mt-2 h-13 cursor-pointer rounded-md bg-primary font-bold text-bg hover:bg-primary-soft disabled:opacity-50"
+                >
+                    {isSubmitting ? 'Erstelle Konto…' : 'Registrieren'}
+                </button>
+            </form>
+
+            <p className="text-center text-text-muted">
+                Schon ein Konto?{' '}
+                <Link to="/login" className="font-medium text-primary hover:underline">
+                    Anmelden
+                </Link>
+            </p>
         </div>
     );
 };

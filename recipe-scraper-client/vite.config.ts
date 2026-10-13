@@ -15,8 +15,8 @@ export default defineConfig({
                 name: 'Reciply',
                 short_name: 'Reciply',
                 description: 'Scrape, save, and cook your recipes.',
-                theme_color: '#080b0d',
-                background_color: '#080b0d',
+                theme_color: '#0e0f0c',
+                background_color: '#0e0f0c',
                 display: 'standalone',
                 start_url: '/',
                 icons: [
