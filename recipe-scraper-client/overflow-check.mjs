@@ -1,78 +1,99 @@
 /**
- * Overflow audit script – checks every page at multiple widths for:
- * - horizontal scroll (scrollWidth > clientWidth)
- * - which elements are the offending overflow sources
- * - bottom dock covering content (insufficient padding-bottom)
+ * Logged-in overflow audit — Playwright script.
+ *
+ * Auth is mocked at network level via page.route() (not addInitScript), so
+ * the AuthContext's tryRefresh() + api.get('/auth/me') calls succeed and
+ * every auth-gated page renders with full layout.
+ *
+ * Run:  npm run overflow-check
+ *
+ * Results are written to /tmp/overflow-results.json and printed as a
+ * markdown table to stdout.
  */
 import { chromium } from 'playwright';
 import { writeFileSync } from 'fs';
 
 const BASE = 'http://localhost:5173';
 
-// Pages accessible without auth (login not required to render)
 const PAGES = [
-    { name: 'Landing (?url=)', path: '/?url=https://example.com' },
-    { name: 'Login', path: '/login' },
-    { name: 'Signup', path: '/signup' },
-    // Auth-gated pages – rendered with a mock auth token injected via localStorage
-    { name: 'Library', path: '/library', auth: true },
-    { name: 'Planner (week)', path: '/planner', auth: true },
-    { name: 'Cart', path: '/cart', auth: true },
-    { name: 'Community', path: '/community', auth: true },
+    { name: 'Landing (?url=)',      path: '/?url=https://example.com',  auth: false },
+    { name: 'Login',                path: '/login',                      auth: false },
+    { name: 'Signup',               path: '/signup',                     auth: false },
+    { name: 'Library',              path: '/library',                    auth: true  },
+    { name: 'Planner (week)',       path: '/planner',                    auth: true  },
+    { name: 'Cart',                 path: '/cart',                       auth: true  },
+    { name: 'Community',            path: '/community',                  auth: true  },
 ];
 
-const WIDTHS = [320, 360, 375, 390, 412, 430];
-const PIXEL_8_PRO = { width: 412, height: 915, deviceScaleFactor: 3.5 };
-const LANDSCAPE = { width: 915, height: 412, deviceScaleFactor: 3.5 };
+const VIEWPORTS = [
+    { label: '320px',              w: 320,  h: 900,  dpr: 1   },
+    { label: '360px',              w: 360,  h: 900,  dpr: 1   },
+    { label: '375px',              w: 375,  h: 900,  dpr: 1   },
+    { label: '390px',              w: 390,  h: 900,  dpr: 1   },
+    { label: '412px (Pixel 8 Pro)',w: 412,  h: 915,  dpr: 3.5 },
+    { label: '430px',              w: 430,  h: 900,  dpr: 1   },
+    { label: '915×412 landscape',  w: 915,  h: 412,  dpr: 3.5 },
+];
 
-// Inject a fake auth token so protected routes render (API calls will 401, but layout renders)
-const FAKE_AUTH_SCRIPT = `
-    localStorage.setItem('token', 'fake-token-for-layout-testing');
-    // Override fetch to prevent 401 errors from crashing the page
-    const origFetch = window.fetch;
-    window.fetch = (...args) => origFetch(...args).catch(() => new Response('[]', { status: 200 }));
-`;
+const UA_MOBILE =
+    'Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) AppleWebKit/537.36 ' +
+    '(KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36';
+
+/**
+ * Register network-level auth mocks on a page.
+ * Intercepts /auth/refresh → returns a fake access token (as the API does).
+ * Intercepts /auth/me      → returns a fake AuthUser.
+ * Intercepts data routes   → returns empty arrays so loading states resolve.
+ */
+async function mockAuth(page) {
+    await page.route('**/api/v1/auth/refresh', (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ data: { accessToken: 'fake-token' } }),
+        }),
+    );
+    await page.route('**/api/v1/auth/me', (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({
+                data: { _id: '1', email: 'test@test.de', name: 'Test', role: 'user' },
+            }),
+        }),
+    );
+    // Data endpoints — empty so pages render without API errors
+    await page.route('**/api/v1/**', (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({ data: [] }),
+        }),
+    );
+}
 
 async function checkOverflow(page) {
     return page.evaluate(() => {
-        const offenders = [];
         const docScrollWidth = document.documentElement.scrollWidth;
         const docClientWidth = document.documentElement.clientWidth;
-        const hasHorizOverflow = docScrollWidth > docClientWidth;
+        const hasOverflow = docScrollWidth > docClientWidth;
 
-        if (hasHorizOverflow) {
-            // Find elements wider than viewport
+        const offenders = [];
+        if (hasOverflow) {
             document.querySelectorAll('*').forEach((el) => {
                 const rect = el.getBoundingClientRect();
                 if (rect.right > docClientWidth + 1 || rect.left < -1) {
-                    const style = window.getComputedStyle(el);
                     offenders.push({
                         tag: el.tagName.toLowerCase(),
-                        id: el.id || null,
-                        classes: el.className?.toString().slice(0, 80) || '',
-                        rect: {
-                            left: Math.round(rect.left),
-                            right: Math.round(rect.right),
-                            width: Math.round(rect.width),
-                        },
-                        overflow: style.overflow,
-                        overflowX: style.overflowX,
+                        cls: el.className?.toString().slice(0, 60) ?? '',
+                        right: Math.round(rect.right),
+                        left: Math.round(rect.left),
                     });
                 }
             });
         }
 
-        // Check body padding vs dock height (dock is ~96px, footer padding should compensate)
-        const dock = document.querySelector('[class*="fixed"][class*="inset-x"]');
-        const dockHeight = dock ? dock.getBoundingClientRect().height : 0;
-
-        return {
-            scrollWidth: docScrollWidth,
-            clientWidth: docClientWidth,
-            overflow: hasHorizOverflow,
-            dockHeight,
-            offenders: offenders.slice(0, 10), // top 10
-        };
+        return { scrollWidth: docScrollWidth, clientWidth: docClientWidth, hasOverflow, offenders: offenders.slice(0, 5) };
     });
 }
 
@@ -80,46 +101,36 @@ async function run() {
     const browser = await chromium.launch();
     const results = [];
 
-    for (const viewport of [
-        ...WIDTHS.map((w) => ({ width: w, height: 900, deviceScaleFactor: 1, label: `${w}px` })),
-        { ...PIXEL_8_PRO, label: '412px (Pixel 8 Pro)' },
-        { ...LANDSCAPE, label: '915×412 landscape' },
-    ]) {
+    for (const vp of VIEWPORTS) {
+        const isPhone = vp.w <= 430;
         const context = await browser.newContext({
-            viewport: { width: viewport.width, height: viewport.height },
-            deviceScaleFactor: viewport.deviceScaleFactor,
-            userAgent: viewport.width <= 430
-                ? 'Mozilla/5.0 (Linux; Android 14; Pixel 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36'
-                : undefined,
+            viewport: { width: vp.w, height: vp.h },
+            deviceScaleFactor: vp.dpr,
+            userAgent: isPhone ? UA_MOBILE : undefined,
         });
 
-        for (const p of PAGES) {
+        for (const pg of PAGES) {
             const page = await context.newPage();
             try {
-                if (p.auth) {
-                    await page.addInitScript(FAKE_AUTH_SCRIPT);
-                }
-                await page.goto(BASE + p.path, { waitUntil: 'networkidle', timeout: 15000 });
-                await page.waitForTimeout(500);
+                if (pg.auth) await mockAuth(page);
+                await page.goto(BASE + pg.path, { waitUntil: 'networkidle', timeout: 20000 });
+                await page.waitForTimeout(600);
 
                 const data = await checkOverflow(page);
-                results.push({
-                    page: p.name,
-                    viewport: viewport.label,
-                    ...data,
-                });
+                results.push({ page: pg.name, viewport: vp.label, ...data });
 
-                if (data.overflow) {
-                    console.log(`OVERFLOW [${viewport.label}] ${p.name}: scrollWidth=${data.scrollWidth} clientWidth=${data.clientWidth}`);
-                    data.offenders.forEach((o) => {
-                        console.log(`  -> <${o.tag}> class="${o.classes}" rect.right=${o.rect.right}`);
-                    });
+                const flag = data.hasOverflow ? '❌ OVERFLOW' : '✅';
+                if (data.hasOverflow) {
+                    console.log(`${flag} [${vp.label}] ${pg.name}  scrollWidth=${data.scrollWidth} clientWidth=${data.clientWidth}`);
+                    data.offenders.forEach((o) =>
+                        console.log(`   <${o.tag}> cls="${o.cls}"  right=${o.right}`),
+                    );
                 } else {
-                    console.log(`OK       [${viewport.label}] ${p.name}`);
+                    console.log(`${flag}  [${vp.label}] ${pg.name}`);
                 }
             } catch (e) {
-                console.log(`ERROR    [${viewport.label}] ${p.name}: ${e.message}`);
-                results.push({ page: p.name, viewport: viewport.label, error: e.message });
+                console.error(`ERROR [${vp.label}] ${pg.name}: ${e.message}`);
+                results.push({ page: pg.name, viewport: vp.label, error: e.message });
             }
             await page.close();
         }
@@ -127,7 +138,24 @@ async function run() {
     }
 
     writeFileSync('/tmp/overflow-results.json', JSON.stringify(results, null, 2));
-    console.log('\nResults saved to /tmp/overflow-results.json');
+
+    // --- Markdown results table ---
+    const pages  = [...new Set(results.map((r) => r.page))];
+    const widths = [...new Set(results.map((r) => r.viewport))];
+
+    console.log('\n## Overflow check results (logged in)\n');
+    console.log('| Page | ' + widths.join(' | ') + ' |');
+    console.log('|---|' + widths.map(() => '---').join('|') + '|');
+    for (const p of pages) {
+        const cells = widths.map((w) => {
+            const r = results.find((x) => x.page === p && x.viewport === w);
+            if (!r) return '–';
+            if (r.error) return '⚠️ err';
+            return r.hasOverflow ? '❌' : '✅';
+        });
+        console.log(`| ${p} | ${cells.join(' | ')} |`);
+    }
+
     await browser.close();
 }
 
