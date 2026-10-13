@@ -6,7 +6,7 @@ const AppLayout = () => {
     const { user, logout } = useAuth();
 
     return (
-        <div className="flex min-h-screen flex-col">
+        <div className="flex min-h-dvh flex-col">
             <Header />
             <main className="flex flex-1 flex-col items-center">
                 <Outlet />
@@ -14,7 +14,7 @@ const AppLayout = () => {
             {/* Mobil Platz für das Dock lassen */}
             <footer
                 className={`flex w-full flex-wrap justify-center gap-6 p-6 text-sm text-text-muted ${
-                    user ? 'pb-44 md:pb-6' : ''
+                    user ? 'pb-below-dock-safe md:pb-6' : ''
                 }`}
             >
                 <Link to="/impressum" className="hover:text-primary">

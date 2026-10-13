@@ -48,6 +48,27 @@
     }
 }
 
+/* Hide scrollbar visually while keeping scroll behaviour */
+@utility scrollbar-hide {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* Safe-area helpers — env() only works after viewport-fit=cover */
+@utility pb-dock-safe {
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+@utility pb-below-dock-safe {
+    padding-bottom: calc(11rem + env(safe-area-inset-bottom, 0px));
+}
+
+@utility pb-cook-safe {
+    padding-bottom: calc(1.75rem + env(safe-area-inset-bottom, 0px));
+}
+
 /* Kleine Großbuchstaben-Labels in Mono (ZUTATEN, DINNER · 25 MIN …) */
 @utility label-mono {
     font-family: var(--font-mono);

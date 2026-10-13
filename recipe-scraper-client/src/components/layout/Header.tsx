@@ -137,7 +137,7 @@ const Header = () => {
             </header>
 
             {/* Mobil: Dock unten — Link-Feld immer erreichbar */}
-            <div className="fixed inset-x-0 bottom-0 z-20 flex flex-col gap-2.5 border-t border-border bg-surface px-3 pt-3 pb-6 md:hidden">
+            <div className="pb-dock-safe fixed inset-x-0 bottom-0 z-20 flex flex-col gap-2.5 border-t border-border bg-surface px-3 pt-3 md:hidden">
                 <PasteForm />
                 <nav aria-label="Hauptnavigation" className="grid grid-cols-4">
                     {TABS.map(({ to, label, Icon }) => (

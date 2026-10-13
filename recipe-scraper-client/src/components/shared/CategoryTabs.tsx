@@ -10,7 +10,7 @@ const CategoryTabs = ({ value, onChange }: CategoryTabsProps) => (
     <div
         role="tablist"
         aria-label="Kategorie"
-        className="flex w-full gap-5 overflow-x-auto border-b border-border"
+        className="scrollbar-hide flex w-full gap-5 overflow-x-auto border-b border-border"
     >
         {['', ...FOOD_CATEGORIES].map((c) => (
             <button

@@ -152,6 +152,10 @@ const Planner = () => {
             month: '2-digit',
         });
 
+    // Short form for mobile nav bar (no weekday) to prevent wrapping at ≤412px
+    const fmtShort = (d: Date) =>
+        d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+
     const title =
         view === 'week'
             ? `${fmt(first)} – ${fmt(last)}`
@@ -159,6 +163,11 @@ const Planner = () => {
                   month: 'long',
                   year: 'numeric',
               });
+
+    const titleShort =
+        view === 'week'
+            ? `${fmtShort(first)} – ${fmtShort(last)}`
+            : title;
 
     const iconButton =
         'flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-md border border-border bg-surface text-text hover:border-border-strong';
@@ -200,8 +209,9 @@ const Planner = () => {
                 >
                     <ChevronLeft size={20} strokeWidth={1.5} aria-hidden />
                 </button>
-                <span className="flex-1 text-center font-mono text-sm uppercase">
-                    {title}
+                <span className="min-w-0 flex-1 overflow-hidden text-center font-mono text-xs uppercase md:text-sm">
+                    <span className="block truncate md:hidden">{titleShort}</span>
+                    <span className="hidden md:block">{title}</span>
                 </span>
                 <button
                     onClick={() => setAnchor(new Date())}
