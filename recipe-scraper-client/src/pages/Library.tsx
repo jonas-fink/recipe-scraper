@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
+import { Star } from 'lucide-react';
 import {
     listRecipes,
-    listCommunity,
     updateRecipe,
-    FOOD_CATEGORIES,
     type Recipe,
     type RecipePatch,
 } from '../api/recipes';
-import FilterButton from '../components/library/FilterButton';
+import CategoryTabs from '../components/shared/CategoryTabs';
 import SearchBar from '../components/shared/SearchBar';
-import { CardGridSkeleton } from '../components/Skeletons';
-import { AiOutlineStar, AiFillStar } from 'react-icons/ai';
+import { ListSkeleton } from '../components/Skeletons';
 
 const Library = () => {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -20,22 +18,21 @@ const Library = () => {
     const [favoritesOnly, setFavoritesOnly] = useState(false);
     const [activeFilter, setActiveFilter] = useState('');
     const [query, setQuery] = useState('');
-    const [communityUrls, setCommunityUrls] = useState<Set<string>>(new Set());
 
     useEffect(() => {
         listRecipes()
             .then(setRecipes)
             .catch((e) => setError((e as Error).message))
             .finally(() => setLoading(false));
-        // Source URLs already in the community — used to block duplicate publishing.
-        listCommunity()
-            .then((rs) => setCommunityUrls(new Set(rs.map((r) => r.sourceUrl))))
-            .catch(() => {});
     }, []);
 
     const patch = async (id: string, patch: RecipePatch) => {
-        const updated = await updateRecipe(id, patch);
-        setRecipes((rs) => rs.map((r) => (r._id === id ? updated : r)));
+        try {
+            const updated = await updateRecipe(id, patch);
+            setRecipes((rs) => rs.map((r) => (r._id === id ? updated : r)));
+        } catch (e) {
+            setError((e as Error).message);
+        }
     };
 
     const q = query.trim().toLowerCase();
@@ -49,132 +46,106 @@ const Library = () => {
     );
 
     return (
-        <div className="flex w-full flex-col items-center gap-6 px-4 py-8 font-display">
-            <div className="flex gap-4 w-full justify-center items-center">
-                {' '}
-                <SearchBar query={query} onChange={setQuery} />{' '}
+        <div className="flex w-full max-w-5xl flex-col gap-4 px-5 py-6">
+            <div className="flex items-center gap-2">
+                <h1 className="flex-1 text-3xl font-bold tracking-tight">
+                    Bibliothek
+                </h1>
                 <button
                     onClick={() => setFavoritesOnly((v) => !v)}
                     aria-pressed={favoritesOnly}
-                    className={`p-2 rounded-full cursor-pointer hover:brightness-110 ${
+                    aria-label="Nur Favoriten"
+                    className={`flex size-11 cursor-pointer items-center justify-center rounded-md ${
                         favoritesOnly
-                            ? 'bg-gradient-brand text-black'
-                            : 'bg-elevated'
+                            ? 'bg-primary text-bg'
+                            : 'border border-border bg-surface text-text hover:border-border-strong'
                     }`}
                 >
-                    {favoritesOnly ? (
-                        <AiFillStar size={24} />
-                    ) : (
-                        <AiOutlineStar size={24} />
-                    )}
+                    <Star
+                        size={20}
+                        strokeWidth={1.5}
+                        fill={favoritesOnly ? 'currentColor' : 'none'}
+                        aria-hidden
+                    />
                 </button>
             </div>
 
-            <div className="flex flex-col w-full max-w-6xl items-center justify-between gap-4">
-                <div className="flex w-full gap-2 flex-nowrap overflow-x-auto scroll-smooth">
-                    <FilterButton
-                        name="All"
-                        isActive={activeFilter === ''}
-                        onSelect={() => setActiveFilter('')}
-                    />
-                    {FOOD_CATEGORIES.map((c) => (
-                        <FilterButton
-                            key={c}
-                            name={c}
-                            isActive={activeFilter === c}
-                            onSelect={() => setActiveFilter(c)}
-                        />
-                    ))}
-                </div>
-            </div>
-            {error && <p className="font-sans text-danger">{error}</p>}
-            {!loading && shown.length === 0 && (
-                <p className="font-sans text-text-subtle">No recipes yet.</p>
+            <SearchBar query={query} onChange={setQuery} />
+            <CategoryTabs value={activeFilter} onChange={setActiveFilter} />
+
+            {error && (
+                <p role="alert" className="text-danger">
+                    {error}
+                </p>
             )}
+            {!loading && shown.length === 0 && (
+                <p className="text-text-muted">
+                    {recipes.length === 0
+                        ? 'Noch keine Rezepte — füge unten einen Link ein.'
+                        : 'Keine Treffer.'}
+                </p>
+            )}
+
             {loading ? (
-                <CardGridSkeleton />
+                <ListSkeleton />
             ) : (
-                <div className="grid w-full max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <ul className="grid gap-x-8 md:grid-cols-2">
                     {shown.map((r) => (
-                        <div
+                        <li
                             key={r._id}
-                            className="flex flex-col overflow-hidden rounded-2xl border border-border bg-glass shadow-card backdrop-blur-md"
+                            className="flex items-center gap-3.5 border-b border-border py-2.5"
                         >
                             <Link
                                 to={`/library/${r._id}`}
-                                style={
-                                    r.imageUrl
-                                        ? {
-                                              backgroundImage: `url(${r.imageUrl})`,
-                                          }
-                                        : undefined
+                                className="group flex min-w-0 flex-1 items-center gap-3.5 text-text"
+                            >
+                                {r.imageUrl ? (
+                                    <img
+                                        src={r.imageUrl}
+                                        alt=""
+                                        className="size-16 shrink-0 rounded-md object-cover"
+                                    />
+                                ) : (
+                                    <span className="size-16 shrink-0 rounded-md bg-elevated" />
+                                )}
+                                <span className="flex min-w-0 flex-col gap-1">
+                                    <span className="truncate font-medium group-hover:text-primary">
+                                        {r.title}
+                                    </span>
+                                    <span className="label-mono truncate">
+                                        {[
+                                            r.category,
+                                            r.cookTimeMinutes != null &&
+                                                `${r.cookTimeMinutes} min`,
+                                        ]
+                                            .filter(Boolean)
+                                            .join(' · ')}
+                                    </span>
+                                </span>
+                            </Link>
+                            <button
+                                onClick={() =>
+                                    patch(r._id!, { isFavorite: !r.isFavorite })
                                 }
-                                className={`relative block aspect-video bg-cover bg-center ${
-                                    r.imageUrl ? '' : 'bg-elevated'
+                                aria-pressed={!!r.isFavorite}
+                                aria-label={`${r.title} als Favorit markieren`}
+                                className={`flex size-11 shrink-0 cursor-pointer items-center justify-center ${
+                                    r.isFavorite
+                                        ? 'text-primary'
+                                        : 'text-text-subtle hover:text-text'
                                 }`}
                             >
-                                <button
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        patch(r._id!, {
-                                            isFavorite: !r.isFavorite,
-                                        });
-                                    }}
-                                    title="Toggle favorite"
-                                    className="absolute right-2 top-2 text-2xl leading-none drop-shadow-lg cursor-pointer"
-                                >
-                                    {r.isFavorite ? (
-                                        <AiFillStar size={32} />
-                                    ) : (
-                                        <AiOutlineStar size={32} />
-                                    )}
-                                </button>
-                                <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent p-4">
-                                    <h3 className="text-xl font-semibold text-white drop-shadow">
-                                        {r.title}
-                                    </h3>
-                                </div>
-                            </Link>
-
-                            <div className="flex gap-3 p-4 font-sans justify-between items-center">
-                                {r.category && (
-                                    <span className="text-sm text-text-subtle self-start">
-                                        {r.category}
-                                    </span>
-                                )}
-                                {(() => {
-                                    const inCommunity =
-                                        !r.isPublished &&
-                                        communityUrls.has(r.sourceUrl);
-                                    return (
-                                        <button
-                                            onClick={() =>
-                                                patch(r._id!, {
-                                                    isPublished: !r.isPublished,
-                                                })
-                                            }
-                                            disabled={inCommunity}
-                                            className="self-end rounded-full bg-gradient-brand px-5 py-2 font-semibold text-bg cursor-pointer hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
-                                        >
-                                            {r.isPublished
-                                                ? 'Unpublish'
-                                                : inCommunity
-                                                  ? 'Already in community'
-                                                  : 'Publish to community'}
-                                        </button>
-                                    );
-                                })()}
-                            </div>
-                        </div>
+                                <Star
+                                    size={20}
+                                    strokeWidth={1.5}
+                                    fill={r.isFavorite ? 'currentColor' : 'none'}
+                                    aria-hidden
+                                />
+                            </button>
+                        </li>
                     ))}
-                </div>
+                </ul>
             )}
-            <datalist id="food-categories">
-                {FOOD_CATEGORIES.map((c) => (
-                    <option key={c} value={c} />
-                ))}
-            </datalist>
         </div>
     );
 };

@@ -5,6 +5,7 @@ export const ingredientSchema = new Schema(
         name: { type: String, required: true },
         amount: { type: Number, default: null },
         unit: { type: String, default: null },
+        aisle: { type: String, default: null }, // Supermarkt-Bereich (nur Warenkorb)
     },
     { _id: false },
 );

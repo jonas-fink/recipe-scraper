@@ -17,6 +17,7 @@ export const ingredientSchema = z.object({
     name: z.string().min(1),
     amount: z.number().nullable(),
     unit: z.string().nullable(),
+    aisle: z.string().nullable().optional(),
 });
 
 export const recipeSchema = z.object({

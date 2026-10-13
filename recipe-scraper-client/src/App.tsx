@@ -10,6 +10,8 @@ import RecipeDetail from './pages/RecipeDetail';
 import Community from './pages/Community';
 import CommunityDetail from './pages/CommunityDetail';
 import Cart from './pages/Cart';
+import Planner from './pages/Planner';
+import CookMode from './pages/CookMode';
 import { Impressum, Datenschutz, Kontakt } from './pages/Legal';
 
 const App = () => {
@@ -33,7 +35,12 @@ const App = () => {
                         <Route path="/library" element={<Library />} />
                         <Route path="/library/:id" element={<RecipeDetail />} />
                         <Route path="/cart" element={<Cart />} />
+                        <Route path="/planner" element={<Planner />} />
                     </Route>
+                </Route>
+                {/* Kochmodus: Vollbild, ohne Dock und Footer */}
+                <Route element={<ProtectedRoute />}>
+                    <Route path="/library/:id/cook" element={<CookMode />} />
                 </Route>
             </Routes>
         </Suspense>
