@@ -154,7 +154,7 @@ const Cart = () => {
                 <button
                     onClick={openModal}
                     aria-label="Zutat hinzufügen"
-                    className="flex size-11 cursor-pointer items-center justify-center rounded-md bg-primary text-bg hover:bg-primary-soft"
+                    className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-md bg-primary text-bg hover:bg-primary-soft"
                 >
                     <Plus size={20} aria-hidden />
                 </button>
