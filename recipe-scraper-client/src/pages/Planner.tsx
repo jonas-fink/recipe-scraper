@@ -282,11 +282,11 @@ const Planner = () => {
                                         return (
                                             <div
                                                 key={m._id}
-                                                className="flex h-11 items-center gap-1.5 rounded-md border border-border bg-surface pr-1 pl-2.5"
+                                                className="flex min-h-11 items-center gap-1.5 rounded-md border border-border bg-surface pr-1 pl-2.5"
                                             >
                                                 <Link
                                                     to={`/library/${m.recipeId._id}`}
-                                                    className="min-w-0 flex-1 truncate text-text hover:text-primary"
+                                                    className="min-w-0 flex-1 self-stretch flex items-center truncate text-text hover:text-primary"
                                                 >
                                                     {m.recipeId.title}
                                                 </Link>
@@ -297,7 +297,7 @@ const Planner = () => {
                                                         }
                                                         disabled={portions <= 1}
                                                         aria-label="Weniger Portionen"
-                                                        className="flex h-11 w-11 cursor-pointer items-center justify-center text-text-muted hover:text-text disabled:opacity-30"
+                                                        className="relative flex h-8 w-8 cursor-pointer items-center justify-center text-text-muted hover:text-text disabled:opacity-30 after:absolute after:-inset-1.5"
                                                     >
                                                         <Minus size={14} aria-hidden />
                                                     </button>
@@ -312,7 +312,7 @@ const Planner = () => {
                                                             changeServings(m, String(portions + 1))
                                                         }
                                                         aria-label="Mehr Portionen"
-                                                        className="flex h-11 w-11 cursor-pointer items-center justify-center text-text-muted hover:text-text"
+                                                        className="relative flex h-8 w-8 cursor-pointer items-center justify-center text-text-muted hover:text-text after:absolute after:-inset-1.5"
                                                     >
                                                         <Plus size={14} aria-hidden />
                                                     </button>
@@ -320,7 +320,7 @@ const Planner = () => {
                                                 <button
                                                     onClick={() => remove(m._id)}
                                                     aria-label="Aus dem Plan entfernen"
-                                                    className="flex size-11 cursor-pointer items-center justify-center text-text-muted hover:text-danger"
+                                                    className="relative flex size-8 cursor-pointer items-center justify-center text-text-muted hover:text-danger after:absolute after:-inset-1.5"
                                                 >
                                                     <X size={16} strokeWidth={1.5} aria-hidden />
                                                 </button>

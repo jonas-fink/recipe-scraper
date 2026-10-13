@@ -78,6 +78,15 @@
     padding-right: max(0.75rem, env(safe-area-inset-right));
 }
 
+/* Side safe-area for header/content in landscape on notched phones */
+@utility pl-safe {
+    padding-left: env(safe-area-inset-left, 0px);
+}
+
+@utility pr-safe {
+    padding-right: env(safe-area-inset-right, 0px);
+}
+
 /* Progressive-enhancement fallback: 100vh for old browsers, 100dvh for modern ones */
 @layer utilities {
     .min-h-dvh {

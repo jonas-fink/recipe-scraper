@@ -89,11 +89,11 @@ const Library = () => {
             {loading ? (
                 <ListSkeleton />
             ) : (
-                <ul className="grid gap-x-8 md:grid-cols-2">
+                <ul className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
                     {shown.map((r) => (
                         <li
                             key={r._id}
-                            className="flex items-center gap-3.5 border-b border-border py-2.5"
+                            className="flex min-w-0 items-center gap-3.5 border-b border-border py-2.5"
                         >
                             <Link
                                 to={`/library/${r._id}`}

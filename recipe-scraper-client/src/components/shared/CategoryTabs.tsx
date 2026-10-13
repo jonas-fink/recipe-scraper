@@ -18,7 +18,7 @@ const CategoryTabs = ({ value, onChange }: CategoryTabsProps) => (
                 role="tab"
                 aria-selected={value === c}
                 onClick={() => onChange(c)}
-                className={`-mb-px h-11 shrink-0 cursor-pointer border-b-2 ${
+                className={`-mb-px h-11 min-w-11 shrink-0 cursor-pointer border-b-2 ${
                     value === c
                         ? 'border-primary font-medium text-text'
                         : 'border-transparent text-text-muted hover:text-text'
