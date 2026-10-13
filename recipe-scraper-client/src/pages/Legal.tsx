@@ -5,7 +5,7 @@ const CONTACT_EMAIL = '[[kontakt@deine-domain.de]]';
 
 const Page = ({ title, children }: { title: string; children: React.ReactNode }) => (
     <article className="w-full max-w-3xl px-4 py-8 font-sans text-text flex flex-col gap-4 [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-4 [&_p]:text-text-muted [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:text-text-muted [&_a]:text-primary [&_a]:underline">
-        <h1 className="font-display text-3xl font-bold">{title}</h1>
+        <h1 className="font-display text-2xl font-bold hyphens-auto sm:text-3xl">{title}</h1>
         {children}
     </article>
 );

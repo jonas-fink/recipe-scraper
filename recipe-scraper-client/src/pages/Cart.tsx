@@ -130,12 +130,12 @@ const Cart = () => {
     const field =
         'h-12 rounded-md border border-border-strong bg-bg px-3 text-text outline-none placeholder:text-text-subtle focus:border-primary';
     const segment = (active: boolean) =>
-        `h-9 cursor-pointer rounded-sm text-sm ${
+        `h-11 cursor-pointer rounded-sm text-sm ${
             active ? 'bg-border font-medium text-text' : 'text-text-muted hover:text-text'
         }`;
 
     return (
-        <div className="flex w-full max-w-2xl flex-col gap-4 px-5 py-6">
+        <div className="flex min-w-0 w-full max-w-2xl flex-col gap-4 px-5 py-6">
             <div className="flex items-center gap-2">
                 <h1 className="flex-1 text-3xl font-bold tracking-tight">
                     Einkaufsliste
@@ -154,7 +154,7 @@ const Cart = () => {
                 <button
                     onClick={openModal}
                     aria-label="Zutat hinzufügen"
-                    className="flex size-11 cursor-pointer items-center justify-center rounded-md bg-primary text-bg hover:bg-primary-soft"
+                    className="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-md bg-primary text-bg hover:bg-primary-soft"
                 >
                     <Plus size={20} aria-hidden />
                 </button>
@@ -275,7 +275,7 @@ const Cart = () => {
                     </div>
                     <button
                         type="submit"
-                        className="mt-1 h-12 cursor-pointer rounded-md bg-primary font-bold text-bg hover:bg-primary-soft"
+                        className="mt-1 h-12 min-w-11 cursor-pointer rounded-md bg-primary font-bold text-bg hover:bg-primary-soft"
                     >
                         Hinzufügen
                     </button>

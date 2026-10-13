@@ -77,7 +77,7 @@ const CommunityDetail = () => {
         'flex size-11 items-center justify-center rounded-md border border-border bg-surface text-text hover:border-border-strong';
 
     return (
-        <div className="flex w-full max-w-5xl flex-col gap-5 px-5 py-5">
+        <div className="flex min-w-0 w-full max-w-5xl flex-col gap-5 px-5 py-5">
             <div className="flex items-center justify-between gap-2">
                 <Link
                     to="/community"

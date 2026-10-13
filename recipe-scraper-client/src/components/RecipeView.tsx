@@ -21,7 +21,7 @@ const RecipeView = ({
     ].filter(Boolean);
 
     const tabClass = (active: boolean) =>
-        `-mb-px h-10 cursor-pointer border-b-2 ${
+        `-mb-px h-11 cursor-pointer border-b-2 ${
             active
                 ? 'border-primary font-medium text-text'
                 : 'border-transparent text-text-muted hover:text-text'

@@ -152,6 +152,10 @@ const Planner = () => {
             month: '2-digit',
         });
 
+    // Short form for mobile nav bar (no weekday) to prevent wrapping at ≤412px
+    const fmtShort = (d: Date) =>
+        d.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit' });
+
     const title =
         view === 'week'
             ? `${fmt(first)} – ${fmt(last)}`
@@ -160,16 +164,21 @@ const Planner = () => {
                   year: 'numeric',
               });
 
+    const titleShort =
+        view === 'week'
+            ? `${fmtShort(first)} – ${fmtShort(last)}`
+            : title;
+
     const iconButton =
         'flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-md border border-border bg-surface text-text hover:border-border-strong';
     const segment = (active: boolean) =>
-        `flex h-9 cursor-pointer items-center rounded-sm px-3 text-sm ${
+        `flex h-11 cursor-pointer items-center rounded-sm px-3 text-sm ${
             active ? 'bg-border font-medium text-text' : 'text-text-muted hover:text-text'
         }`;
 
     return (
-        <div className="flex w-full max-w-3xl flex-col gap-3 px-5 py-6">
-            <div className="flex items-center gap-2">
+        <div className="flex min-w-0 w-full max-w-3xl flex-col gap-3 px-5 py-6">
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
                 <h1 className="flex-1 text-3xl font-bold tracking-tight">
                     Essensplan
                 </h1>
@@ -200,8 +209,9 @@ const Planner = () => {
                 >
                     <ChevronLeft size={20} strokeWidth={1.5} aria-hidden />
                 </button>
-                <span className="flex-1 text-center font-mono text-sm uppercase">
-                    {title}
+                <span className="min-w-0 flex-1 overflow-hidden text-center font-mono text-xs uppercase md:text-sm">
+                    <span className="block truncate md:hidden">{titleShort}</span>
+                    <span className="hidden md:block">{title}</span>
                 </span>
                 <button
                     onClick={() => setAnchor(new Date())}
@@ -272,48 +282,50 @@ const Planner = () => {
                                         return (
                                             <div
                                                 key={m._id}
-                                                className="flex h-11 items-center gap-1.5 rounded-md border border-border bg-surface pr-1 pl-2.5"
+                                                className="flex flex-col rounded-md border border-border bg-surface pl-2.5 pr-1 sm:flex-row sm:min-h-11 sm:items-center sm:gap-1.5"
                                             >
                                                 <Link
                                                     to={`/library/${m.recipeId._id}`}
-                                                    className="min-w-0 flex-1 truncate text-text hover:text-primary"
+                                                    className="min-w-0 flex-1 flex items-center py-2 text-text hover:text-primary sm:self-stretch sm:py-0"
                                                 >
-                                                    {m.recipeId.title}
+                                                    <span className="min-w-0 truncate">{m.recipeId.title}</span>
                                                 </Link>
-                                                <span className="flex items-center rounded-sm border border-border-strong">
-                                                    <button
-                                                        onClick={() =>
-                                                            changeServings(m, String(portions - 1))
-                                                        }
-                                                        disabled={portions <= 1}
-                                                        aria-label="Weniger Portionen"
-                                                        className="flex h-8 w-7 cursor-pointer items-center justify-center text-text-muted hover:text-text disabled:opacity-30"
-                                                    >
-                                                        <Minus size={14} aria-hidden />
-                                                    </button>
-                                                    <span
-                                                        aria-label="Portionen"
-                                                        className="w-5 text-center font-mono text-sm"
-                                                    >
-                                                        {portions}
+                                                <div className="flex items-center gap-1.5 pb-1.5 sm:pb-0">
+                                                    <span className="flex items-center rounded-sm border border-border-strong">
+                                                        <button
+                                                            onClick={() =>
+                                                                changeServings(m, String(portions - 1))
+                                                            }
+                                                            disabled={portions <= 1}
+                                                            aria-label="Weniger Portionen"
+                                                            className="relative flex h-8 w-8 cursor-pointer items-center justify-center text-text-muted hover:text-text disabled:opacity-30 after:absolute after:-inset-1.5"
+                                                        >
+                                                            <Minus size={14} aria-hidden />
+                                                        </button>
+                                                        <span
+                                                            aria-label="Portionen"
+                                                            className="w-5 text-center font-mono text-sm"
+                                                        >
+                                                            {portions}
+                                                        </span>
+                                                        <button
+                                                            onClick={() =>
+                                                                changeServings(m, String(portions + 1))
+                                                            }
+                                                            aria-label="Mehr Portionen"
+                                                            className="relative flex h-8 w-8 cursor-pointer items-center justify-center text-text-muted hover:text-text after:absolute after:-inset-1.5"
+                                                        >
+                                                            <Plus size={14} aria-hidden />
+                                                        </button>
                                                     </span>
                                                     <button
-                                                        onClick={() =>
-                                                            changeServings(m, String(portions + 1))
-                                                        }
-                                                        aria-label="Mehr Portionen"
-                                                        className="flex h-8 w-7 cursor-pointer items-center justify-center text-text-muted hover:text-text"
+                                                        onClick={() => remove(m._id)}
+                                                        aria-label="Aus dem Plan entfernen"
+                                                        className="relative flex size-8 cursor-pointer items-center justify-center text-text-muted hover:text-danger after:absolute after:-inset-1.5"
                                                     >
-                                                        <Plus size={14} aria-hidden />
+                                                        <X size={16} strokeWidth={1.5} aria-hidden />
                                                     </button>
-                                                </span>
-                                                <button
-                                                    onClick={() => remove(m._id)}
-                                                    aria-label="Aus dem Plan entfernen"
-                                                    className="flex size-8 cursor-pointer items-center justify-center text-text-muted hover:text-danger"
-                                                >
-                                                    <X size={16} strokeWidth={1.5} aria-hidden />
-                                                </button>
+                                                </div>
                                             </div>
                                         );
                                     })}

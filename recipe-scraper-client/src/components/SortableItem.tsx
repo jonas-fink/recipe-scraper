@@ -68,7 +68,7 @@ const SortableItem = ({
                     onPointerDown={(e) => e.stopPropagation()}
                     onKeyDown={(e) => e.stopPropagation()}
                     aria-label={`Bereich für ${name}`}
-                    className="h-8 max-w-32 shrink-0 cursor-pointer rounded-sm border border-border bg-surface px-1.5 text-xs text-text-muted"
+                    className="h-8 max-w-24 shrink-0 cursor-pointer rounded-sm border border-border bg-surface px-1.5 text-xs text-text-muted md:max-w-32"
                 >
                     {AISLES.map((a) => (
                         <option key={a.id} value={a.id}>
@@ -83,7 +83,7 @@ const SortableItem = ({
                 onPointerDown={(e) => e.stopPropagation()}
                 onKeyDown={(e) => e.stopPropagation()}
                 aria-label={`${name} entfernen`}
-                className="flex size-10 shrink-0 cursor-pointer items-center justify-center text-text-muted hover:text-danger"
+                className="flex size-11 shrink-0 cursor-pointer items-center justify-center text-text-muted hover:text-danger"
             >
                 <X size={18} strokeWidth={1.5} aria-hidden />
             </button>

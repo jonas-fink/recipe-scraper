@@ -46,7 +46,7 @@ const Library = () => {
     );
 
     return (
-        <div className="flex w-full max-w-5xl flex-col gap-4 px-5 py-6">
+        <div className="flex min-w-0 w-full max-w-5xl flex-col gap-4 px-5 py-6">
             <div className="flex items-center gap-2">
                 <h1 className="flex-1 text-3xl font-bold tracking-tight">
                     Bibliothek
@@ -89,11 +89,11 @@ const Library = () => {
             {loading ? (
                 <ListSkeleton />
             ) : (
-                <ul className="grid gap-x-8 md:grid-cols-2">
+                <ul className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
                     {shown.map((r) => (
                         <li
                             key={r._id}
-                            className="flex items-center gap-3.5 border-b border-border py-2.5"
+                            className="flex min-w-0 items-center gap-3.5 border-b border-border py-2.5"
                         >
                             <Link
                                 to={`/library/${r._id}`}

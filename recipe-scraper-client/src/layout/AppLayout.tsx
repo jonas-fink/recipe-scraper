@@ -6,30 +6,30 @@ const AppLayout = () => {
     const { user, logout } = useAuth();
 
     return (
-        <div className="flex min-h-screen flex-col">
+        <div className="flex min-h-dvh flex-col">
             <Header />
-            <main className="flex flex-1 flex-col items-center">
+            <main className="pl-safe pr-safe flex flex-1 flex-col items-center">
                 <Outlet />
             </main>
             {/* Mobil Platz für das Dock lassen */}
             <footer
                 className={`flex w-full flex-wrap justify-center gap-6 p-6 text-sm text-text-muted ${
-                    user ? 'pb-44 md:pb-6' : ''
+                    user ? 'pb-below-dock-safe md:pb-6' : ''
                 }`}
             >
-                <Link to="/impressum" className="hover:text-primary">
+                <Link to="/impressum" className="flex min-h-11 items-center hover:text-primary">
                     Impressum
                 </Link>
-                <Link to="/datenschutz" className="hover:text-primary">
+                <Link to="/datenschutz" className="flex min-h-11 items-center hover:text-primary">
                     Datenschutz
                 </Link>
-                <Link to="/kontakt" className="hover:text-primary">
+                <Link to="/kontakt" className="flex min-h-11 items-center hover:text-primary">
                     Kontakt
                 </Link>
                 {user && (
                     <button
                         onClick={logout}
-                        className="cursor-pointer hover:text-danger md:hidden"
+                        className="flex min-h-11 cursor-pointer items-center hover:text-danger md:hidden"
                     >
                         Abmelden
                     </button>

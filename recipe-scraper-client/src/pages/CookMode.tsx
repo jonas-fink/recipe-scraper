@@ -69,7 +69,7 @@ const CookMode = () => {
     const uses = stepIngredients(steps[i], recipe.ingredients);
 
     return (
-        <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col gap-4 px-4 pt-4 pb-7">
+        <div className="pb-cook-safe mx-auto flex min-h-dvh w-full max-w-2xl flex-col gap-4 px-4 pt-4">
             <div className="flex items-center gap-3">
                 <Link
                     to={back}
