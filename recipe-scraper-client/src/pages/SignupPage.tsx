@@ -26,7 +26,7 @@ const SignupPage = () => {
     };
 
     return (
-        <div className="flex w-full max-w-md flex-col gap-8 px-5 pt-16 pb-8">
+        <div className="flex min-w-0 w-full max-w-md flex-col gap-8 px-5 pt-16 pb-8">
             <div className="flex flex-col gap-2">
                 <h1 className="text-4xl font-bold tracking-tight">
                     Konto erstellen.

@@ -58,15 +58,32 @@
 
 /* Safe-area helpers — env() only works after viewport-fit=cover */
 @utility pb-dock-safe {
-    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
 }
 
 @utility pb-below-dock-safe {
-    padding-bottom: calc(11rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: max(11rem, calc(9rem + env(safe-area-inset-bottom)));
 }
 
 @utility pb-cook-safe {
-    padding-bottom: calc(1.75rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: max(1.75rem, env(safe-area-inset-bottom));
+}
+
+/* Landscape safe-area padding for the bottom dock (notched phones) */
+@utility pl-dock-safe {
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+}
+
+@utility pr-dock-safe {
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+}
+
+/* Progressive-enhancement fallback: 100vh for old browsers, 100dvh for modern ones */
+@layer utilities {
+    .min-h-dvh {
+        min-height: 100vh;
+        min-height: 100dvh;
+    }
 }
 
 /* Kleine Großbuchstaben-Labels in Mono (ZUTATEN, DINNER · 25 MIN …) */

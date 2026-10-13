@@ -172,13 +172,13 @@ const Planner = () => {
     const iconButton =
         'flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-md border border-border bg-surface text-text hover:border-border-strong';
     const segment = (active: boolean) =>
-        `flex h-9 cursor-pointer items-center rounded-sm px-3 text-sm ${
+        `flex h-11 cursor-pointer items-center rounded-sm px-3 text-sm ${
             active ? 'bg-border font-medium text-text' : 'text-text-muted hover:text-text'
         }`;
 
     return (
-        <div className="flex w-full max-w-3xl flex-col gap-3 px-5 py-6">
-            <div className="flex items-center gap-2">
+        <div className="flex min-w-0 w-full max-w-3xl flex-col gap-3 px-5 py-6">
+            <div className="flex min-w-0 flex-wrap items-center gap-2">
                 <h1 className="flex-1 text-3xl font-bold tracking-tight">
                     Essensplan
                 </h1>
@@ -297,7 +297,7 @@ const Planner = () => {
                                                         }
                                                         disabled={portions <= 1}
                                                         aria-label="Weniger Portionen"
-                                                        className="flex h-8 w-7 cursor-pointer items-center justify-center text-text-muted hover:text-text disabled:opacity-30"
+                                                        className="flex h-11 w-11 cursor-pointer items-center justify-center text-text-muted hover:text-text disabled:opacity-30"
                                                     >
                                                         <Minus size={14} aria-hidden />
                                                     </button>
@@ -312,7 +312,7 @@ const Planner = () => {
                                                             changeServings(m, String(portions + 1))
                                                         }
                                                         aria-label="Mehr Portionen"
-                                                        className="flex h-8 w-7 cursor-pointer items-center justify-center text-text-muted hover:text-text"
+                                                        className="flex h-11 w-11 cursor-pointer items-center justify-center text-text-muted hover:text-text"
                                                     >
                                                         <Plus size={14} aria-hidden />
                                                     </button>
@@ -320,7 +320,7 @@ const Planner = () => {
                                                 <button
                                                     onClick={() => remove(m._id)}
                                                     aria-label="Aus dem Plan entfernen"
-                                                    className="flex size-8 cursor-pointer items-center justify-center text-text-muted hover:text-danger"
+                                                    className="flex size-11 cursor-pointer items-center justify-center text-text-muted hover:text-danger"
                                                 >
                                                     <X size={16} strokeWidth={1.5} aria-hidden />
                                                 </button>

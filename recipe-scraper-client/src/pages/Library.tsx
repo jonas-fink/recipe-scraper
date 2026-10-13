@@ -46,7 +46,7 @@ const Library = () => {
     );
 
     return (
-        <div className="flex w-full max-w-5xl flex-col gap-4 px-5 py-6">
+        <div className="flex min-w-0 w-full max-w-5xl flex-col gap-4 px-5 py-6">
             <div className="flex items-center gap-2">
                 <h1 className="flex-1 text-3xl font-bold tracking-tight">
                     Bibliothek

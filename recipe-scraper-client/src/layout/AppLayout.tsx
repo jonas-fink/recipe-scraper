@@ -6,7 +6,7 @@ const AppLayout = () => {
     const { user, logout } = useAuth();
 
     return (
-        <div className="flex min-h-dvh flex-col">
+        <div className="flex min-h-screen min-h-dvh flex-col">
             <Header />
             <main className="flex flex-1 flex-col items-center">
                 <Outlet />

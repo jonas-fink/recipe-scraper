@@ -155,7 +155,7 @@ const RecipeDetail = () => {
         'flex h-9 cursor-pointer items-center gap-1.5 rounded-full bg-bg/85 px-3 text-sm font-medium text-text hover:bg-bg';
 
     return (
-        <div className="flex w-full max-w-5xl flex-col gap-5 px-5 py-5">
+        <div className="flex min-w-0 w-full max-w-5xl flex-col gap-5 px-5 py-5">
             <div className="flex items-center gap-2">
                 <Link
                     to="/library"

@@ -68,7 +68,7 @@ const LandingPage = () => {
     if (user && !urlParam && !source) return <Navigate to="/library" replace />;
 
     return (
-        <div className="flex w-full max-w-5xl flex-col items-center gap-8 px-4 py-8">
+        <div className="flex min-w-0 w-full max-w-5xl flex-col items-center gap-8 px-4 py-8">
             {!user && <Hero />}
             {!user && <ExtractForm loading={loading} onSubmit={handleExtract} />}
 

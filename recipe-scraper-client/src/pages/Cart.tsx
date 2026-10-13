@@ -130,12 +130,12 @@ const Cart = () => {
     const field =
         'h-12 rounded-md border border-border-strong bg-bg px-3 text-text outline-none placeholder:text-text-subtle focus:border-primary';
     const segment = (active: boolean) =>
-        `h-9 cursor-pointer rounded-sm text-sm ${
+        `h-11 cursor-pointer rounded-sm text-sm ${
             active ? 'bg-border font-medium text-text' : 'text-text-muted hover:text-text'
         }`;
 
     return (
-        <div className="flex w-full max-w-2xl flex-col gap-4 px-5 py-6">
+        <div className="flex min-w-0 w-full max-w-2xl flex-col gap-4 px-5 py-6">
             <div className="flex items-center gap-2">
                 <h1 className="flex-1 text-3xl font-bold tracking-tight">
                     Einkaufsliste

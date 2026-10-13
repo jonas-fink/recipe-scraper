@@ -83,7 +83,7 @@ const SortableItem = ({
                 onPointerDown={(e) => e.stopPropagation()}
                 onKeyDown={(e) => e.stopPropagation()}
                 aria-label={`${name} entfernen`}
-                className="flex size-10 shrink-0 cursor-pointer items-center justify-center text-text-muted hover:text-danger"
+                className="flex size-11 shrink-0 cursor-pointer items-center justify-center text-text-muted hover:text-danger"
             >
                 <X size={18} strokeWidth={1.5} aria-hidden />
             </button>

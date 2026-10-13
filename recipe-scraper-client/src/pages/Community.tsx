@@ -32,7 +32,7 @@ const Community = () => {
     );
 
     return (
-        <div className="flex w-full max-w-6xl flex-col gap-4 px-5 py-6">
+        <div className="flex min-w-0 w-full max-w-6xl flex-col gap-4 px-5 py-6">
             <h1 className="text-3xl font-bold tracking-tight">Community</h1>
             <SearchBar query={query} onChange={setQuery} />
             <CategoryTabs value={activeFilter} onChange={setActiveFilter} />

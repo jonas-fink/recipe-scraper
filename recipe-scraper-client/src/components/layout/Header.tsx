@@ -106,7 +106,7 @@ const Header = () => {
                             key={to}
                             to={to}
                             className={({ isActive }) =>
-                                `flex h-10 items-center gap-2 rounded-sm px-3 ${
+                                `flex h-11 items-center gap-2 rounded-sm px-3 ${
                                     isActive
                                         ? 'bg-elevated text-text'
                                         : 'text-text-muted hover:text-text'
@@ -129,7 +129,7 @@ const Header = () => {
                     <button
                         onClick={logout}
                         aria-label="Abmelden"
-                        className="flex size-10 cursor-pointer items-center justify-center rounded-sm text-text-muted hover:text-danger"
+                        className="flex size-11 cursor-pointer items-center justify-center rounded-sm text-text-muted hover:text-danger"
                     >
                         <LogOut size={18} strokeWidth={1.5} aria-hidden />
                     </button>
@@ -137,9 +137,11 @@ const Header = () => {
             </header>
 
             {/* Mobil: Dock unten — Link-Feld immer erreichbar */}
-            <div className="pb-dock-safe fixed inset-x-0 bottom-0 z-20 flex flex-col gap-2.5 border-t border-border bg-surface px-3 pt-3 md:hidden">
-                <PasteForm />
-                <nav aria-label="Hauptnavigation" className="grid grid-cols-4">
+            <div className="pb-dock-safe pl-dock-safe pr-dock-safe fixed inset-x-0 bottom-0 z-20 flex flex-col border-t border-border bg-surface pt-2 md:hidden landscape:flex-row landscape:items-center landscape:gap-2 landscape:pt-1">
+                <div className="flex min-w-0 flex-1 px-1 pt-1 pb-0 landscape:py-1">
+                    <PasteForm />
+                </div>
+                <nav aria-label="Hauptnavigation" className="grid grid-cols-4 landscape:w-56 landscape:shrink-0">
                     {TABS.map(({ to, label, Icon }) => (
                         <NavLink
                             key={to}
