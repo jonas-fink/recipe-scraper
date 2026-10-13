@@ -78,7 +78,7 @@ const Header = () => {
 
     if (!user)
         return (
-            <header className="pl-safe pr-safe flex items-center justify-between border-b border-border bg-surface px-5 py-3 md:px-8">
+            <header className="px-content-safe flex items-center justify-between border-b border-border bg-surface py-3 md:px-content-safe-wide">
                 {brand}
                 <Link
                     to="/login"
@@ -92,7 +92,7 @@ const Header = () => {
     return (
         <>
             {/* Desktop: Topbar mit Labels */}
-            <header className="pl-safe pr-safe sticky top-0 z-20 hidden flex-wrap items-center gap-x-8 gap-y-3 border-b border-border bg-surface px-8 py-3 md:flex">
+            <header className="px-content-safe-wide sticky top-0 z-20 hidden flex-wrap items-center gap-x-8 gap-y-3 border-b border-border bg-surface py-3 md:flex">
                 {brand}
                 <div className="flex max-w-xl flex-[1_1_320px]">
                     <PasteForm />

@@ -275,7 +275,7 @@ const Cart = () => {
                     </div>
                     <button
                         type="submit"
-                        className="mt-1 h-12 cursor-pointer rounded-md bg-primary font-bold text-bg hover:bg-primary-soft"
+                        className="mt-1 h-12 min-w-11 cursor-pointer rounded-md bg-primary font-bold text-bg hover:bg-primary-soft"
                     >
                         Hinzufügen
                     </button>

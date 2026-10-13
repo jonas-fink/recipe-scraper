@@ -282,48 +282,50 @@ const Planner = () => {
                                         return (
                                             <div
                                                 key={m._id}
-                                                className="flex min-h-11 items-center gap-1.5 rounded-md border border-border bg-surface pr-1 pl-2.5"
+                                                className="flex flex-col rounded-md border border-border bg-surface pl-2.5 pr-1 sm:flex-row sm:min-h-11 sm:items-center sm:gap-1.5"
                                             >
                                                 <Link
                                                     to={`/library/${m.recipeId._id}`}
-                                                    className="min-w-0 flex-1 self-stretch flex items-center truncate text-text hover:text-primary"
+                                                    className="min-w-0 flex-1 flex items-center py-2 text-text hover:text-primary sm:self-stretch sm:py-0"
                                                 >
-                                                    {m.recipeId.title}
+                                                    <span className="min-w-0 truncate">{m.recipeId.title}</span>
                                                 </Link>
-                                                <span className="flex items-center rounded-sm border border-border-strong">
-                                                    <button
-                                                        onClick={() =>
-                                                            changeServings(m, String(portions - 1))
-                                                        }
-                                                        disabled={portions <= 1}
-                                                        aria-label="Weniger Portionen"
-                                                        className="relative flex h-8 w-8 cursor-pointer items-center justify-center text-text-muted hover:text-text disabled:opacity-30 after:absolute after:-inset-1.5"
-                                                    >
-                                                        <Minus size={14} aria-hidden />
-                                                    </button>
-                                                    <span
-                                                        aria-label="Portionen"
-                                                        className="w-5 text-center font-mono text-sm"
-                                                    >
-                                                        {portions}
+                                                <div className="flex items-center gap-1.5 pb-1.5 sm:pb-0">
+                                                    <span className="flex items-center rounded-sm border border-border-strong">
+                                                        <button
+                                                            onClick={() =>
+                                                                changeServings(m, String(portions - 1))
+                                                            }
+                                                            disabled={portions <= 1}
+                                                            aria-label="Weniger Portionen"
+                                                            className="relative flex h-8 w-8 cursor-pointer items-center justify-center text-text-muted hover:text-text disabled:opacity-30 after:absolute after:-inset-1.5"
+                                                        >
+                                                            <Minus size={14} aria-hidden />
+                                                        </button>
+                                                        <span
+                                                            aria-label="Portionen"
+                                                            className="w-5 text-center font-mono text-sm"
+                                                        >
+                                                            {portions}
+                                                        </span>
+                                                        <button
+                                                            onClick={() =>
+                                                                changeServings(m, String(portions + 1))
+                                                            }
+                                                            aria-label="Mehr Portionen"
+                                                            className="relative flex h-8 w-8 cursor-pointer items-center justify-center text-text-muted hover:text-text after:absolute after:-inset-1.5"
+                                                        >
+                                                            <Plus size={14} aria-hidden />
+                                                        </button>
                                                     </span>
                                                     <button
-                                                        onClick={() =>
-                                                            changeServings(m, String(portions + 1))
-                                                        }
-                                                        aria-label="Mehr Portionen"
-                                                        className="relative flex h-8 w-8 cursor-pointer items-center justify-center text-text-muted hover:text-text after:absolute after:-inset-1.5"
+                                                        onClick={() => remove(m._id)}
+                                                        aria-label="Aus dem Plan entfernen"
+                                                        className="relative flex size-8 cursor-pointer items-center justify-center text-text-muted hover:text-danger after:absolute after:-inset-1.5"
                                                     >
-                                                        <Plus size={14} aria-hidden />
+                                                        <X size={16} strokeWidth={1.5} aria-hidden />
                                                     </button>
-                                                </span>
-                                                <button
-                                                    onClick={() => remove(m._id)}
-                                                    aria-label="Aus dem Plan entfernen"
-                                                    className="relative flex size-8 cursor-pointer items-center justify-center text-text-muted hover:text-danger after:absolute after:-inset-1.5"
-                                                >
-                                                    <X size={16} strokeWidth={1.5} aria-hidden />
-                                                </button>
+                                                </div>
                                             </div>
                                         );
                                     })}
