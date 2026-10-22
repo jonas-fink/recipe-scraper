@@ -9,6 +9,7 @@ import {
     LogOut,
     ShoppingBasket,
     Users,
+    X,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
@@ -19,8 +20,8 @@ const TABS = [
     { to: '/community', label: 'Community', Icon: Users },
 ];
 
-// Link-Feld in Dock und Topbar: die Extraktion selbst läuft auf der Startseite (?url=…).
-const PasteForm = () => {
+// Aufklappbares Link-Feld unter der Topbar: die Extraktion selbst läuft auf der Startseite (?url=…).
+const PasteForm = ({ onDone }: { onDone: () => void }) => {
     const navigate = useNavigate();
     const [url, setUrl] = useState('');
 
@@ -32,8 +33,10 @@ const PasteForm = () => {
                 if (!u) return;
                 navigate(`/?url=${encodeURIComponent(u)}`);
                 setUrl('');
+                onDone();
             }}
-            className="flex min-w-0 flex-1 gap-2"
+            onKeyDown={(e) => e.key === 'Escape' && onDone()}
+            className="mx-auto flex w-full max-w-3xl gap-2"
         >
             <label className="flex h-12 min-w-0 flex-1 items-center gap-2 rounded-md border border-border-strong bg-bg px-3 focus-within:border-primary md:h-11">
                 <LinkIcon
@@ -45,6 +48,7 @@ const PasteForm = () => {
                 <input
                     type="url"
                     required
+                    autoFocus
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     aria-label="Rezept-Link"
@@ -65,6 +69,7 @@ const PasteForm = () => {
 
 const Header = () => {
     const { user, logout } = useAuth();
+    const [pasteOpen, setPasteOpen] = useState(false);
 
     const brand = (
         <Link
@@ -89,69 +94,131 @@ const Header = () => {
             </header>
         );
 
+    const pasteToggle = (
+        <button
+            onClick={() => setPasteOpen((o) => !o)}
+            aria-expanded={pasteOpen}
+            aria-controls="paste-panel"
+            aria-label={pasteOpen ? 'Link-Feld schließen' : 'Rezept per Link hinzufügen'}
+            className="flex size-10 shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-md bg-primary font-medium text-bg hover:bg-primary-soft md:w-auto md:px-3"
+        >
+            {pasteOpen ? (
+                <X size={20} aria-hidden />
+            ) : (
+                <LinkIcon size={20} aria-hidden />
+            )}
+            <span className="hidden md:inline">Rezept</span>
+        </button>
+    );
+
+    const logoutButton = (
+        <button
+            onClick={logout}
+            aria-label="Abmelden"
+            className="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-sm text-text-muted hover:text-danger"
+        >
+            <LogOut size={20} strokeWidth={1.5} aria-hidden />
+        </button>
+    );
+
     return (
         <>
-            {/* Desktop: Topbar mit Labels */}
-            <header className="sticky top-0 z-20 hidden flex-wrap items-center gap-x-8 gap-y-3 border-b border-border bg-surface px-8 py-3 md:flex">
-                {brand}
-                <div className="flex max-w-xl flex-[1_1_320px]">
-                    <PasteForm />
-                </div>
-                <nav
-                    aria-label="Hauptnavigation"
-                    className="ml-auto flex flex-wrap gap-1"
-                >
-                    {TABS.map(({ to, label, Icon }) => (
-                        <NavLink
-                            key={to}
-                            to={to}
-                            className={({ isActive }) =>
-                                `flex h-10 items-center gap-2 rounded-sm px-3 ${
-                                    isActive
-                                        ? 'bg-elevated text-text'
-                                        : 'text-text-muted hover:text-text'
-                                }`
-                            }
-                        >
-                            {({ isActive }) => (
-                                <>
-                                    <Icon
-                                        size={18}
-                                        strokeWidth={1.5}
-                                        className={isActive ? 'text-primary' : ''}
-                                        aria-hidden
-                                    />
-                                    {label}
-                                </>
-                            )}
-                        </NavLink>
-                    ))}
-                    <button
-                        onClick={logout}
-                        aria-label="Abmelden"
-                        className="flex size-10 cursor-pointer items-center justify-center rounded-sm text-text-muted hover:text-danger"
+            <div className="sticky top-0 z-20">
+                {/* Desktop: Topbar mit Labels */}
+                <header className="hidden items-center gap-x-8 border-b border-border bg-surface px-8 py-3 md:flex">
+                    {brand}
+                    <nav
+                        aria-label="Hauptnavigation"
+                        className="ml-auto flex flex-wrap gap-1"
                     >
-                        <LogOut size={18} strokeWidth={1.5} aria-hidden />
-                    </button>
-                </nav>
-            </header>
+                        {TABS.map(({ to, label, Icon }) => (
+                            <NavLink
+                                key={to}
+                                to={to}
+                                className={({ isActive }) =>
+                                    `flex h-10 items-center gap-2 rounded-sm px-3 ${
+                                        isActive
+                                            ? 'bg-elevated text-text'
+                                            : 'text-text-muted hover:text-text'
+                                    }`
+                                }
+                            >
+                                {({ isActive }) => (
+                                    <>
+                                        <Icon
+                                            size={18}
+                                            strokeWidth={1.5}
+                                            className={
+                                                isActive ? 'text-primary' : ''
+                                            }
+                                            aria-hidden
+                                        />
+                                        {label}
+                                    </>
+                                )}
+                            </NavLink>
+                        ))}
+                    </nav>
+                    <div className="flex items-center gap-1">
+                        {pasteToggle}
+                        {logoutButton}
+                    </div>
+                </header>
 
-            {/* Mobil: Dock unten — Link-Feld immer erreichbar */}
-            <div className="fixed inset-x-0 bottom-0 z-20 flex flex-col gap-2.5 border-t border-border bg-surface px-3 pt-3 pb-6 md:hidden">
-                <PasteForm />
+                {/* Mobil: schmale Topbar */}
+                <header className="flex h-14 items-center gap-1 border-b border-border bg-surface px-4 md:hidden">
+                    <div className="flex-1">{brand}</div>
+                    {pasteToggle}
+                    {logoutButton}
+                </header>
+
+                {pasteOpen && (
+                    <div
+                        id="paste-panel"
+                        className="border-b border-border bg-surface px-4 py-3 md:px-8"
+                    >
+                        <PasteForm onDone={() => setPasteOpen(false)} />
+                    </div>
+                )}
+            </div>
+
+            {/* Mobil: Dock unten */}
+            <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-surface px-3 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] md:hidden">
                 <nav aria-label="Hauptnavigation" className="grid grid-cols-4">
                     {TABS.map(({ to, label, Icon }) => (
                         <NavLink
                             key={to}
                             to={to}
-                            aria-label={label}
                             className={({ isActive }) =>
-                                `flex h-11 items-center justify-center ${
-                                    isActive ? 'text-primary' : 'text-text-muted'
+                                `flex h-14 flex-col items-center justify-center gap-1 ${
+                                    isActive
+                                        ? 'text-primary'
+                                        : 'text-text-muted'
                                 }`
                             }
                         >
-                            <Icon size={22} strokeWidth={1.5} aria-hidden />
+                            {({ isActive }) => (
+                                <>
+                                    <span
+                                        className={`flex h-7 w-12 items-center justify-center rounded-full ${
+                                            isActive ? 'bg-elevated' : ''
+                                        }`}
+                                    >
+                                        <Icon
+                                            size={20}
+                                            strokeWidth={1.5}
+                                            aria-hidden
+                                        />
+                                    </span>
+                                    <span
+                                        className={`label-mono text-[10px] tracking-normal ${
+                                            isActive ? 'text-text' : ''
+                                        }`}
+                                    >
+                                        {label}
+                                    </span>
+                                </>
+                            )}
                         </NavLink>
                     ))}
                 </nav>

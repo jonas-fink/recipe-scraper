@@ -19,6 +19,12 @@ export default defineConfig({
                 background_color: '#0e0f0c',
                 display: 'standalone',
                 start_url: '/',
+                // Android: Reciply erscheint im Teilen-Menü → landet als ?url=/?text= auf der Startseite
+                share_target: {
+                    action: '/',
+                    method: 'GET',
+                    params: { title: 'title', text: 'text', url: 'url' },
+                },
                 icons: [
                     { src: 'pwa-64x64.png', sizes: '64x64', type: 'image/png' },
                     { src: 'pwa-192x192.png', sizes: '192x192', type: 'image/png' },

@@ -68,7 +68,7 @@ export function ExtractForm({
                 }}
                 className="flex w-full flex-col gap-2 md:flex-row"
             >
-                <label className="flex h-13 min-w-0 flex-1 items-center gap-2 rounded-md border border-border-strong bg-bg px-4 focus-within:border-primary">
+                <label className="flex h-13 min-w-0 items-center gap-2 rounded-md border border-border-strong bg-bg px-4 focus-within:border-primary md:flex-1">
                     <LinkIcon
                         size={18}
                         strokeWidth={1.5}
@@ -109,10 +109,11 @@ export function ExtractForm({
                 {sources.map((s) => (
                     <span
                         key={s.name}
+                        title={s.name}
                         className="inline-flex h-8 items-center gap-1.5 rounded-sm border border-border bg-bg px-2.5 text-sm"
                     >
                         {s.icon}
-                        {s.name}
+                        <span className="max-md:sr-only">{s.name}</span>
                     </span>
                 ))}
             </div>

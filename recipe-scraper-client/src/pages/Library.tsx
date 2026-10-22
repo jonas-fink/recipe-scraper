@@ -48,7 +48,7 @@ const Library = () => {
     return (
         <div className="flex w-full max-w-5xl flex-col gap-4 px-5 py-6">
             <div className="flex items-center gap-2">
-                <h1 className="flex-1 text-3xl font-bold tracking-tight">
+                <h1 className="min-w-0 flex-1 text-2xl font-bold tracking-tight md:text-3xl">
                     Bibliothek
                 </h1>
                 <button
@@ -81,7 +81,7 @@ const Library = () => {
             {!loading && shown.length === 0 && (
                 <p className="text-text-muted">
                     {recipes.length === 0
-                        ? 'Noch keine Rezepte — füge unten einen Link ein.'
+                        ? 'Noch keine Rezepte — füge oben über das Link-Symbol einen Link ein.'
                         : 'Keine Treffer.'}
                 </p>
             )}
@@ -89,7 +89,7 @@ const Library = () => {
             {loading ? (
                 <ListSkeleton />
             ) : (
-                <ul className="grid gap-x-8 md:grid-cols-2">
+                <ul className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
                     {shown.map((r) => (
                         <li
                             key={r._id}

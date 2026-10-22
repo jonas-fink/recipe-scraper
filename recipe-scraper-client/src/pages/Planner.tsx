@@ -152,9 +152,23 @@ const Planner = () => {
             month: '2-digit',
         });
 
+    // Woche: KW + Monat statt Datumsspanne — die Tage stehen ja schon in der Liste.
+    // ISO-KW: der Donnerstag der Woche bestimmt Woche und Jahr.
+    const thu = addDays(first, 3);
+    const kw =
+        Math.floor(
+            Math.round((+thu - +new Date(thu.getFullYear(), 0, 1)) / 864e5) / 7,
+        ) + 1;
     const title =
         view === 'week'
-            ? `${fmt(first)} – ${fmt(last)}`
+            ? `KW ${kw} · ${thu.toLocaleDateString('de-DE', {
+                  month: 'short',
+                  // Jahr nur, wenn nicht das aktuelle — passt sonst mobil nicht in eine Zeile
+                  year:
+                      thu.getFullYear() === new Date().getFullYear()
+                          ? undefined
+                          : 'numeric',
+              })}`
             : anchor.toLocaleDateString('de-DE', {
                   month: 'long',
                   year: 'numeric',
@@ -170,7 +184,7 @@ const Planner = () => {
     return (
         <div className="flex w-full max-w-3xl flex-col gap-3 px-5 py-6">
             <div className="flex items-center gap-2">
-                <h1 className="flex-1 text-3xl font-bold tracking-tight">
+                <h1 className="min-w-0 flex-1 text-2xl font-bold tracking-tight md:text-3xl">
                     Essensplan
                 </h1>
                 <div

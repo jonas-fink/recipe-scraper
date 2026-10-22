@@ -16,7 +16,11 @@ const LandingPage = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [params, setParams] = useSearchParams();
-    const urlParam = params.get('url');
+    // Share-Target (Android): Apps schicken den Link oft nur im Text mit.
+    const urlParam =
+        params.get('url') ||
+        params.get('text')?.match(/https?:\/\/\S+/)?.[0] ||
+        null;
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -38,7 +42,7 @@ const LandingPage = () => {
         }
     };
 
-    // Link aus dem Dock (?url=…) übernehmen, Parameter danach entfernen.
+    // Link aus Topbar oder Teilen-Menü (?url=… / ?text=…) übernehmen, Parameter danach entfernen.
     useEffect(() => {
         if (!urlParam || urlParam === lastUrl.current) return;
         lastUrl.current = urlParam;

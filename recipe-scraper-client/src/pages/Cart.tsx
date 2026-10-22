@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { getCart, setCart } from '../api/cart';
 import type { Ingredient } from '../api/recipes';
-import { Plus, X } from 'lucide-react';
+import { Plus, Trash2, X } from 'lucide-react';
 import SortableItem from '../components/SortableItem';
 import { AISLES, AISLE_ORDER, aisleOf } from '../utils/aisles';
 import {
@@ -137,7 +137,7 @@ const Cart = () => {
     return (
         <div className="flex w-full max-w-2xl flex-col gap-4 px-5 py-6">
             <div className="flex items-center gap-2">
-                <h1 className="flex-1 text-3xl font-bold tracking-tight">
+                <h1 className="min-w-0 flex-1 text-2xl font-bold tracking-tight md:text-3xl">
                     Einkaufsliste
                 </h1>
                 {items.length > 0 && (
@@ -146,9 +146,10 @@ const Cart = () => {
                             if (window.confirm('Ganze Einkaufsliste löschen?'))
                                 save([]);
                         }}
-                        className="h-11 cursor-pointer rounded-md px-3 text-sm text-text-muted hover:text-danger"
+                        className="flex h-11 cursor-pointer items-center gap-1.5 rounded-md px-3 text-sm text-text-muted hover:text-danger"
                     >
-                        Alles löschen
+                        <Trash2 size={18} strokeWidth={1.5} aria-hidden />
+                        <span className="max-md:sr-only">Alles löschen</span>
                     </button>
                 )}
                 <button
