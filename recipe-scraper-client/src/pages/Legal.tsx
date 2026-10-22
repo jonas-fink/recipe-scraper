@@ -1,9 +1,15 @@
-// ponytail: alle drei Rechtstexte in einer Datei; aufteilen wenn sie wirklich wachsen.
+// alle drei Rechtstexte in einer Datei; aufteilen wenn sie wirklich wachsen.
 // PLATZHALTER: alle [[...]] Felder vor dem Livegang ausfüllen.
 
-const CONTACT_EMAIL = '[[kontakt@deine-domain.de]]';
+const CONTACT_EMAIL = 'jonasfink.dev@gmail.com';
 
-const Page = ({ title, children }: { title: string; children: React.ReactNode }) => (
+const Page = ({
+    title,
+    children,
+}: {
+    title: string;
+    children: React.ReactNode;
+}) => (
     <article className="w-full max-w-3xl px-4 py-8 font-sans text-text flex flex-col gap-4 [&_h2]:font-display [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-4 [&_p]:text-text-muted [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:text-text-muted [&_a]:text-primary [&_a]:underline">
         <h1 className="font-display text-3xl font-bold">{title}</h1>
         {children}
@@ -14,40 +20,34 @@ export const Impressum = () => (
     <Page title="Impressum">
         <h2>Angaben gemäß § 5 DDG</h2>
         <p>
-            [[Vorname Nachname / Firmenname]]
+            Jonas Fink
             <br />
-            [[Straße und Hausnummer]]
+            Friedrich-Ebert-Straße 23
             <br />
-            [[PLZ Ort]]
+            34117 Kassel, Hessen
             <br />
-            [[Land]]
+            Deutschland
         </p>
 
         <h2>Kontakt</h2>
         <p>
-            Telefon: [[+49 ...]]
+            Telefon: +49 17630398556
             <br />
             E-Mail: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
         </p>
 
-        <h2>Umsatzsteuer-ID</h2>
-        <p>
-            Umsatzsteuer-Identifikationsnummer gemäß § 27 a UStG: [[DE...]]
-            <br />
-            (entfällt bei Kleinunternehmern nach § 19 UStG)
-        </p>
-
         <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
         <p>
-            [[Vorname Nachname]]
+            Jonas Fink
             <br />
-            [[Straße, PLZ Ort]]
+            Friedrich-Ebert-Straße 23, 34117 Kassel
         </p>
 
         <h2>Streitschlichtung</h2>
         <p>
-            Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren
-            vor einer Verbraucherschlichtungsstelle teilzunehmen.
+            Wir sind nicht bereit oder verpflichtet, an
+            Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle
+            teilzunehmen.
         </p>
     </Page>
 );
@@ -56,10 +56,10 @@ export const Datenschutz = () => (
     <Page title="Datenschutzerklärung">
         <h2>1. Verantwortlicher</h2>
         <p>
-            [[Vorname Nachname / Firmenname]], [[Straße]], [[PLZ Ort]],{' '}
+            Jonas Fink, Friedrich-Ebert-Straße 23, 34117 Kassel,{' '}
             <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
             <br />
-            Datenschutzbeauftragter: [[Name oder „nicht bestellt“]]
+            Datenschutzbeauftragter: „nicht bestellt“
         </p>
 
         <h2>2. Welche Daten wir verarbeiten</h2>
@@ -77,8 +77,7 @@ export const Datenschutz = () => (
             <li>
                 <strong>Server-Logs:</strong> IP-Adresse, Zeitpunkt, aufgerufene
                 URL und User-Agent zur Absicherung des Betriebs (Art. 6 Abs. 1
-                lit. f DSGVO – berechtigtes Interesse), Speicherdauer
-                [[z. B. 7 Tage]].
+                lit. f DSGVO – berechtigtes Interesse), Speicherdauer 7 Tage.
             </li>
             <li>
                 <strong>Technisch notwendige Cookies / Local Storage:</strong>{' '}
@@ -94,13 +93,13 @@ export const Datenschutz = () => (
                 Auftragsverarbeiter (Art. 28 DSGVO).
             </li>
             <li>
-                <strong>Datenbank:</strong> [[z. B. MongoDB Atlas, Region]].
+                <strong>Datenbank:</strong> MongoDB Atlas, EU-Frankfurt.
             </li>
             <li>
                 <strong>Rezept-Auswertung:</strong> Wenn du eine Rezept-URL
                 importierst, wird der öffentlich abrufbare Rezepttext der
-                Quellseite zur Strukturierung an [[Google Gemini API, Google
-                Ireland Ltd.]] übermittelt. Personenbezogene Daten von dir werden
+                Quellseite zur Strukturierung an Google Gemini API, Google
+                Ireland Ltd. übermittelt. Personenbezogene Daten von dir werden
                 dabei nicht übertragen. Übermittlung in Drittländer erfolgt auf
                 Grundlage der EU-Standardvertragsklauseln.
             </li>
@@ -126,17 +125,17 @@ export const Datenschutz = () => (
         <h2>6. Beschwerderecht</h2>
         <p>
             Du kannst dich bei einer Datenschutz-Aufsichtsbehörde beschweren,
-            zuständig ist [[zuständige Landesbehörde, z. B. LfDI
-            Baden-Württemberg]].
+            zuständig ist die zuständige Landesbehörde, z. B. LfDI
+            Baden-Württemberg.
         </p>
 
         <h2>7. Keine automatisierte Entscheidungsfindung</h2>
         <p>
-            Es findet keine automatisierte Entscheidungsfindung oder Profiling im
-            Sinne von Art. 22 DSGVO statt.
+            Es findet keine automatisierte Entscheidungsfindung oder Profiling
+            im Sinne von Art. 22 DSGVO statt.
         </p>
 
-        <p className="text-sm">Stand: [[Monat Jahr]]</p>
+        <p className="text-sm">Stand: Oktober 2026</p>
     </Page>
 );
 
